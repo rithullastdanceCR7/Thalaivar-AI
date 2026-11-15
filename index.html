@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ACcyUAC5_c9M4XqeuajgJMcTNnzYITcIV_QeyqXpGiQ" />
+  <meta name="google-site-verification" content="ACcyUAC5_c9M4XqeuajgJMcTNnzYITcIV_QeyqXpGiQ" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>THALAIVAR AI // All-in-One Cyber Studio</title>
@@ -247,8 +247,8 @@
         <section id="i2i" class="card">
           <h2 class="tool-head">Image → Image</h2>
           <p class="tool-desc">Transform any uploaded image into a new style.</p>
-          <label>Source Image</label>
-          <input id="i2iFile" type="file" accept="image/*" />
+          <label>Source Images (Select 1 or more to blend)</label>
+          <input id="i2iFile" type="file" accept="image/*" multiple />
           <label>Transformation Prompt</label>
           <input id="i2iPrompt" type="text" placeholder="e.g. Turn into anime style with glowing blue aura" />
           <label>Change Strength: <span id="strVal">0.65</span></label>
@@ -280,8 +280,8 @@
         <section id="i2v" class="card">
           <h2 class="tool-head">Image → Video (Up to 2 Mins)</h2>
           <p class="tool-desc">Animate any photo with motion prompts and camera presets.</p>
-          <label>Source Image</label>
-          <input id="i2vFile" type="file" accept="image/*" />
+          <label>Source Images (Select 1 or more for multi-scene video)</label>
+          <input id="i2vFile" type="file" accept="image/*" multiple />
           <label>Motion Prompt</label>
           <input id="i2vMotion" type="text" placeholder="e.g. Dramatic zoom out fast, pan right, pulse" />
           <label>Motion Preset</label>
@@ -650,14 +650,27 @@ document.getElementById("t2iBtn").addEventListener("click", async () => {
   } catch (e) { document.getElementById("t2iStatus").textContent = "Error: " + e.message; }
 });
 
-// 2. Image to Image
+async function filesToBlendedWebpB64(files) {
+  const c = document.createElement("canvas"); c.width = 512; c.height = 512;
+  const ctx = c.getContext("2d");
+  const list = Array.from(files);
+  for (let i = 0; i < list.length; i++) {
+    const img = await fileToImg(list[i]);
+    ctx.globalAlpha = 1 / (i + 1);
+    ctx.drawImage(img, 0, 0, 512, 512);
+  }
+  ctx.globalAlpha = 1;
+  return c.toDataURL("image/webp").split(",")[1];
+}
+
+// 2. Image to Image (1 or more images)
 document.getElementById("i2iBtn").addEventListener("click", async () => {
-  const f = document.getElementById("i2iFile").files[0];
+  const files = document.getElementById("i2iFile").files;
   const p = document.getElementById("i2iPrompt").value.trim();
-  if (!f) return toast("Upload an image first!");
+  if (!files || !files.length) return toast("Upload at least 1 image first!");
   if (!p) return toast("Enter a transformation prompt!");
   try {
-    const b64 = await fileToWebpB64(f);
+    const b64 = await filesToBlendedWebpB64(files);
     const url = await hordeImage({
       prompt: p, source_image: b64, source_processing: "img2img",
       params: { width: 512, height: 512, steps: 20, n: 1, denoising_strength: parseFloat(document.getElementById("i2iStr").value) }
@@ -728,10 +741,46 @@ document.getElementById("t2vBtn").addEventListener("click", async () => {
   } catch (e) { document.getElementById("t2vStatus").textContent = "Error: " + e.message; }
 });
 
+async function animateMultiImgs(files, seconds, motionPrompt, preset, videoEl, dlEl, statusEl, progWrap, progBar) {
+  const imgs = await Promise.all(Array.from(files).map(f => fileToImg(f)));
+  if (imgs.length === 1) {
+    return animateImg(URL.createObjectURL(files[0]), seconds, motionPrompt, preset, videoEl, dlEl, statusEl, progWrap, progBar);
+  }
+  const mode = resolveMotion(motionPrompt, preset);
+  const speed = (motionPrompt || "").toLowerCase().includes("fast") ? 1.6 : 1.0;
+  progWrap.style.display = "block"; progBar.style.width = "0%";
+  const c = document.createElement("canvas"); c.width = 512; c.height = 512;
+  const ctx = c.getContext("2d");
+  const rec = new MediaRecorder(c.captureStream(30));
+  const chunks = [];
+  rec.ondataavailable = e => chunks.push(e.data);
+  rec.onstop = () => {
+    showMedia(videoEl, dlEl, URL.createObjectURL(new Blob(chunks, { type: "video/webm" })));
+    progWrap.style.display = "none";
+    statusEl.textContent = `Done! (${seconds}s multi-image ${mode.replace("_", " ")} video ready)`;
+  };
+  rec.start();
+  const start = performance.now(), dur = seconds * 1000, seg = 1 / imgs.length;
+  function draw(now) {
+    const t = Math.min((now - start) / dur, 1), pct = Math.round(t * 100);
+    progBar.style.width = pct + "%";
+    statusEl.textContent = `Rendering multi-image video: ${Math.round(t * seconds)}s / ${seconds}s (${pct}%)`;
+    const idx = Math.min(imgs.length - 1, Math.floor(t / seg));
+    const localT = (t - idx * seg) / seg;
+    const zoom = mode === "zoom_out" ? 1.35 - 0.35 * localT : mode === "pulse" ? 1.15 + 0.1 * Math.sin(localT * Math.PI * 4 * speed) : 1.0 + 0.3 * localT * speed;
+    const s = 512 / zoom, sx = (512 - s) / 2;
+    const tmp = document.createElement("canvas"); tmp.width = 512; tmp.height = 512;
+    tmp.getContext("2d").drawImage(imgs[idx], 0, 0, 512, 512);
+    ctx.drawImage(tmp, sx, sx, s, s, 0, 0, 512, 512);
+    if (t < 1) requestAnimationFrame(draw); else rec.stop();
+  }
+  requestAnimationFrame(draw);
+}
+
 document.getElementById("i2vBtn").addEventListener("click", async () => {
-  const f = document.getElementById("i2vFile").files[0];
-  if (!f) return toast("Upload an image first!");
-  await animateImg(URL.createObjectURL(f), parseInt(document.getElementById("i2vSec").value),
+  const files = document.getElementById("i2vFile").files;
+  if (!files || !files.length) return toast("Upload at least 1 image first!");
+  await animateMultiImgs(files, parseInt(document.getElementById("i2vSec").value),
     document.getElementById("i2vMotion").value, document.getElementById("i2vStyle").value,
     document.getElementById("i2vOut"), document.getElementById("i2vDl"), document.getElementById("i2vStatus"),
     document.getElementById("i2vProgWrap"), document.getElementById("i2vProg"));
