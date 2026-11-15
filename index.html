@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THALAIVAR AI // All-in-One Cyber Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050814;
+      --panel: rgba(13, 19, 38, 0.84);
+      --panel2: rgba(9, 13, 28, 0.92);
+      --cyan: #00f0ff;
+      --violet: #8b5cf6;
+      --pink: #ec4899;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: rgba(0, 240, 255, 0.22);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; font-family: 'Space Grotesk', sans-serif; color: var(--text); background: var(--bg);
+      background-image:
+        radial-gradient(circle at 12% 10%, rgba(0, 240, 255, 0.14), transparent 35%),
+        radial-gradient(circle at 88% 85%, rgba(139, 92, 246, 0.18), transparent 40%),
+        linear-gradient(rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.035) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      padding: 20px 14px 48px;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 20px; }
+    .badge {
+      display: inline-block; padding: 4px 14px; border: 1px solid rgba(0, 240, 255, 0.45);
+      border-radius: 999px; font-size: 11px; letter-spacing: 2px; color: var(--cyan); text-transform: uppercase; margin-bottom: 8px;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif; font-size: clamp(26px, 4.5vw, 42px); margin: 0; letter-spacing: 2px;
+      background: linear-gradient(90deg, #fff, var(--cyan), var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .sub { color: var(--muted); margin-top: 6px; font-size: 13px; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+    .sidebar {
+      background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border);
+      border-radius: 16px; padding: 14px; position: sticky; top: 14px;
+    }
+    @media (max-width: 820px) { .sidebar { position: static; } }
+    .cat-title {
+      font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 1.5px; color: var(--cyan);
+      text-transform: uppercase; margin: 12px 0 6px 6px; opacity: 0.85;
+    }
+    .cat-title:first-child { margin-top: 2px; }
+    .nav-btn {
+      width: 100%; text-align: left; padding: 9px 11px; margin-bottom: 4px; border-radius: 9px;
+      border: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer;
+      font-family: inherit; font-size: 13px; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 8px;
+    }
+    .nav-btn:hover { background: rgba(0, 240, 255, 0.08); color: #fff; }
+    .nav-btn.active {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.16), rgba(139, 92, 246, 0.22));
+      border-color: var(--cyan); color: #fff; box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
+    }
+    .main {
+      background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55); min-height: 520px;
+    }
+    .card { display: none; }
+    .card.active { display: block; animation: fade 0.2s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .tool-head { font-family: 'Orbitron', sans-serif; font-size: 19px; margin: 0 0 4px; color: #fff; }
+    .tool-desc { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+    label { display: block; font-size: 12px; color: var(--cyan); margin: 12px 0 5px; letter-spacing: 0.5px; text-transform: uppercase; }
+    input[type="text"], input[type="number"], textarea, select, input[type="file"] {
+      width: 100%; padding: 11px 13px; border-radius: 10px; border: 1px solid rgba(148, 163, 184, 0.25);
+      background: var(--panel2); color: #fff; font-family: inherit; font-size: 14px; outline: none;
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.18); }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .go {
+      flex: 1; min-width: 140px; padding: 12px 16px; border: 0; border-radius: 10px; cursor: pointer;
+      font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 1px; color: #050814; font-weight: 800;
+      background: linear-gradient(90deg, var(--cyan), #38bdf8, var(--violet)); transition: 0.2s;
+    }
+    .go:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
+    .sec-btn {
+      padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(0, 240, 255, 0.35);
+      background: rgba(0, 240, 255, 0.08); color: var(--cyan); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600;
+    }
+    .sec-btn:hover { background: rgba(0, 240, 255, 0.18); }
+    .progress-wrap { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin-top: 12px; display: none; }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--violet)); transition: width 0.2s; }
+    .status { color: var(--muted); font-size: 13px; margin-top: 10px; min-height: 18px; }
+    .preview-img, .preview-vid, canvas.edit-canvas {
+      width: 100%; max-height: 440px; object-fit: contain; margin-top: 14px; border-radius: 12px;
+      border: 1px solid rgba(0, 240, 255, 0.22); background: #000; display: none;
+    }
+    canvas.edit-canvas.show, .preview-img.show, .preview-vid.show { display: block; }
+    .dl {
+      display: none; margin-top: 10px; text-align: center; padding: 10px; border-radius: 8px;
+      border: 1px solid var(--cyan); color: var(--cyan); text-decoration: none; font-size: 13px; font-weight: 600;
+    }
+    .dl.show { display: block; }
+    .dl:hover { background: rgba(0, 240, 255, 0.12); }
+    .out-box {
+      margin-top: 14px; padding: 16px; border-radius: 12px; background: var(--panel2);
+      border: 1px solid rgba(148, 163, 184, 0.2); white-space: pre-wrap; line-height: 1.55; font-size: 14px; display: none;
+    }
+    .out-box.show { display: block; }
+    .chat-log {
+      height: 300px; overflow-y: auto; padding: 14px; border-radius: 12px; background: var(--panel2);
+      border: 1px solid rgba(148, 163, 184, 0.2); display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;
+    }
+    .msg { max-width: 82%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; }
+    .msg.user { align-self: flex-end; background: rgba(0, 240, 255, 0.16); border: 1px solid rgba(0, 240, 255, 0.35); }
+    .msg.bot { align-self: flex-start; background: rgba(139, 92, 246, 0.16); border: 1px solid rgba(139, 92, 246, 0.35); }
+    .flashcard {
+      margin-top: 14px; min-height: 180px; border-radius: 14px; padding: 24px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; text-align: center; font-size: 18px; font-weight: 600;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(139, 92, 246, 0.18));
+      border: 1px solid var(--cyan); transition: transform 0.2s;
+    }
+    .flashcard:hover { transform: scale(1.01); }
+    .slide-stage {
+      margin-top: 14px; min-height: 260px; border-radius: 14px; padding: 28px;
+      background: linear-gradient(135deg, #090f24, #151030); border: 1px solid var(--violet);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .slide-stage h3 { font-family: 'Orbitron', sans-serif; color: var(--cyan); margin: 0 0 12px; font-size: 22px; }
+    .slide-stage ul { margin: 0; padding-left: 20px; line-height: 1.8; font-size: 15px; }
+    table.tt { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+    table.tt th, table.tt td { border: 1px solid rgba(148, 163, 184, 0.25); padding: 8px; text-align: center; }
+    table.tt th { background: rgba(0, 240, 255, 0.12); color: var(--cyan); font-family: 'Orbitron', sans-serif; font-size: 11px; }
+    svg.mindmap { width: 100%; height: 380px; background: var(--panel2); border-radius: 12px; border: 1px solid var(--border); margin-top: 14px; display: none; }
+    svg.mindmap.show { display: block; }
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 10px;
+      background: #0f172a; border: 1px solid var(--cyan); color: #fff; font-size: 13px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 9999; display: none;
+    }
+    .toast.show { display: block; }
+    #rajniIntro {
+      position: fixed; inset: 0; z-index: 10000; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center; padding: 24px;
+      background: radial-gradient(circle at center, #1a0f36 0%, #050814 60%, #000 100%);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #rajniIntro.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .rajni-stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+      background-image: radial-gradient(#00f0ff 1px, transparent 1px), radial-gradient(#fbbf24 1.5px, transparent 1.5px);
+      background-size: 60px 60px, 90px 90px; background-position: 0 0, 30px 45px;
+      animation: starPulse 3s infinite alternate;
+    }
+    @keyframes starPulse { from { opacity: 0.25; transform: scale(1); } to { opacity: 0.6; transform: scale(1.03); } }
+    .rajni-line {
+      position: relative; font-family: 'Orbitron', sans-serif; font-weight: 800;
+      letter-spacing: clamp(4px, 1.5vw, 14px); margin: 8px 0;
+    }
+    .rajni-super {
+      font-size: clamp(24px, 5vw, 54px);
+      background: linear-gradient(90deg, #fde047, #f59e0b, #fff, #f59e0b);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.75));
+      animation: slamIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .rajni-name {
+      font-size: clamp(34px, 7vw, 74px);
+      background: linear-gradient(90deg, #00f0ff, #ffffff, #8b5cf6, #00f0ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 24px rgba(0, 240, 255, 0.85));
+      animation: slamIn 0.9s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes slamIn {
+      from { opacity: 0; transform: scale(1.6); letter-spacing: 26px; }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .rajni-sub { position: relative; color: #cbd5e1; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin: 14px 0 24px; }
+    .rajni-btns { position: relative; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div id="rajniIntro" style="background:#000;">
+    <canvas id="rajniCanvas" width="720" height="400" style="max-width:95vw;max-height:68vh;border-radius:12px;"></canvas>
+    <div class="rajni-btns" style="margin-top:16px;">
+      <button class="go" id="enterSoundBtn" style="min-width:250px;">🔊 ENTER WITH THEME MUSIC</button>
+      <button class="sec-btn" id="skipIntroBtn">Skip Intro</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <header>
+      <div class="badge">Zero Paywalls // 18-in-1 Neural &amp; Creator Suite</div>
+      <h1>THALAIVAR AI</h1>
+      <div class="sub">Images • Videos (Up to 2 Mins) • Editors • Music • Voice • Student &amp; Productivity Suite</div>
+      <button class="sec-btn" id="replayIntroBtn" style="margin-top:10px;">🎬 Replay Superstar Intro</button>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="cat-title">Media Studio</div>
+        <button class="nav-btn active" data-tab="t2i">Text → Image</button>
+        <button class="nav-btn" data-tab="i2i">Image → Image</button>
+        <button class="nav-btn" data-tab="t2v">Text → Video</button>
+        <button class="nav-btn" data-tab="i2v">Image → Video</button>
+
+        <div class="cat-title">Editors</div>
+        <button class="nav-btn" data-tab="aiImgEdit">AI Image Editor</button>
+        <button class="nav-btn" data-tab="normImgEdit">Normal Image Editor</button>
+        <button class="nav-btn" data-tab="aiVidEdit">AI Video Editor</button>
+        <button class="nav-btn" data-tab="normVidEdit">Normal Video Editor</button>
+
+        <div class="cat-title">Audio &amp; Voice</div>
+        <button class="nav-btn" data-tab="musicGen">AI Music Generator</button>
+        <button class="nav-btn" data-tab="tts">AI Text to Speech</button>
+        <button class="nav-btn" data-tab="dictator">AI Dictator (STT)</button>
+
+        <div class="cat-title">Chat &amp; Docs</div>
+        <button class="nav-btn" data-tab="chatbot">Thalaivar Chatbot</button>
+        <button class="nav-btn" data-tab="docGen">AI Document Generator</button>
+        <button class="nav-btn" data-tab="slideGen">AI Slide Generator</button>
+
+        <div class="cat-title">Student Suite</div>
+        <button class="nav-btn" data-tab="notesGen">Highclass Notes</button>
+        <button class="nav-btn" data-tab="mindmapGen">MindMap Generator</button>
+        <button class="nav-btn" data-tab="flashGen">Flashcard Generator</button>
+        <button class="nav-btn" data-tab="timetableGen">Timetable Generator</button>
+      </aside>
+
+      <main class="main">
+        <!-- 1. Text to Image -->
+        <section id="t2i" class="card active">
+          <h2 class="tool-head">Text → Image</h2>
+          <p class="tool-desc">Generate free AI artwork using community AI Horde workers.</p>
+          <label>Image Prompt</label>
+          <input id="t2iPrompt" type="text" placeholder="e.g. Cyberpunk sports car under neon rain, ultra detailed" />
+          <div class="btn-row"><button class="go" id="t2iBtn">GENERATE IMAGE</button></div>
+          <div id="t2iStatus" class="status"></div>
+          <img id="t2iOut" class="preview-img" alt="Generated" />
+          <a id="t2iDl" class="dl" download="thalaivar-image.png">⬇ Download Image</a>
+        </section>
+
+        <!-- 2. Image to Image -->
+        <section id="i2i" class="card">
+          <h2 class="tool-head">Image → Image</h2>
+          <p class="tool-desc">Transform any uploaded image into a new style.</p>
+          <label>Source Image</label>
+          <input id="i2iFile" type="file" accept="image/*" />
+          <label>Transformation Prompt</label>
+          <input id="i2iPrompt" type="text" placeholder="e.g. Turn into anime style with glowing blue aura" />
+          <label>Change Strength: <span id="strVal">0.65</span></label>
+          <input id="i2iStr" type="range" min="0.1" max="0.95" step="0.05" value="0.65" />
+          <div class="btn-row"><button class="go" id="i2iBtn">TRANSFORM IMAGE</button></div>
+          <div id="i2iStatus" class="status"></div>
+          <img id="i2iOut" class="preview-img" alt="Transformed" />
+          <a id="i2iDl" class="dl" download="thalaivar-remix.png">⬇ Download Image</a>
+        </section>
+
+        <!-- 3. Text to Video -->
+        <section id="t2v" class="card">
+          <h2 class="tool-head">Text → Video (Up to 2 Mins)</h2>
+          <p class="tool-desc">Generates an AI scene and animates it with your camera motion prompt.</p>
+          <label>Scene Prompt</label>
+          <input id="t2vPrompt" type="text" placeholder="e.g. Futuristic spaceship flying past Saturn rings" />
+          <label>Motion / Camera Prompt</label>
+          <input id="t2vMotion" type="text" placeholder="e.g. cinematic zoom in, pan left, pulse, fast" />
+          <label>Duration: <span id="t2vSecVal">10</span>s (Max 120s)</label>
+          <input id="t2vSec" type="range" min="1" max="120" step="1" value="10" />
+          <div class="btn-row"><button class="go" id="t2vBtn">GENERATE VIDEO</button></div>
+          <div id="t2vProgWrap" class="progress-wrap"><div id="t2vProg" class="progress-bar"></div></div>
+          <div id="t2vStatus" class="status"></div>
+          <video id="t2vOut" class="preview-vid" controls loop></video>
+          <a id="t2vDl" class="dl" download="thalaivar-t2v.webm">⬇ Download Video</a>
+        </section>
+
+        <!-- 4. Image to Video -->
+        <section id="i2v" class="card">
+          <h2 class="tool-head">Image → Video (Up to 2 Mins)</h2>
+          <p class="tool-desc">Animate any photo with motion prompts and camera presets.</p>
+          <label>Source Image</label>
+          <input id="i2vFile" type="file" accept="image/*" />
+          <label>Motion Prompt</label>
+          <input id="i2vMotion" type="text" placeholder="e.g. Dramatic zoom out fast, pan right, pulse" />
+          <label>Motion Preset</label>
+          <select id="i2vStyle">
+            <option value="auto">Auto (Detect from Motion Prompt)</option>
+            <option value="zoom_in">Smooth Zoom In</option>
+            <option value="zoom_out">Dramatic Zoom Out</option>
+            <option value="pan_left">Pan Left</option>
+            <option value="pan_right">Pan Right</option>
+            <option value="pulse">Energy Pulse + Zoom</option>
+          </select>
+          <label>Duration: <span id="i2vSecVal">10</span>s (Max 120s)</label>
+          <input id="i2vSec" type="range" min="1" max="120" step="1" value="10" />
+          <div class="btn-row"><button class="go" id="i2vBtn">ANIMATE IMAGE</button></div>
+          <div id="i2vProgWrap" class="progress-wrap"><div id="i2vProg" class="progress-bar"></div></div>
+          <div id="i2vStatus" class="status"></div>
+          <video id="i2vOut" class="preview-vid" controls loop></video>
+          <a id="i2vDl" class="dl" download="thalaivar-i2v.webm">⬇ Download Video</a>
+        </section>
+
+        <!-- 5. AI Image Editor -->
+        <section id="aiImgEdit" class="card">
+          <h2 class="tool-head">AI Image Editor</h2>
+          <p class="tool-desc">Edit objects, lighting, or style in your photo using natural language.</p>
+          <label>Upload Image to Edit</label>
+          <input id="aieFile" type="file" accept="image/*" />
+          <label>Edit Instructions</label>
+          <input id="aiePrompt" type="text" placeholder="e.g. Add golden sunset lighting and sunglasses" />
+          <label>Edit Strength: <span id="aieStrVal">0.55</span></label>
+          <input id="aieStr" type="range" min="0.15" max="0.9" step="0.05" value="0.55" />
+          <div class="btn-row"><button class="go" id="aieBtn">APPLY AI EDIT</button></div>
+          <div id="aieStatus" class="status"></div>
+          <img id="aieOut" class="preview-img" alt="Edited" />
+          <a id="aieDl" class="dl" download="thalaivar-ai-edit.png">⬇ Download Edited Image</a>
+        </section>
+
+        <!-- 6. Normal Image Editor -->
+        <section id="normImgEdit" class="card">
+          <h2 class="tool-head">Normal Image Editor</h2>
+          <p class="tool-desc">Instant offline color grading, rotation, flip, and text watermark.</p>
+          <label>Upload Image</label>
+          <input id="nieFile" type="file" accept="image/*" />
+          <div class="grid2">
+            <div><label>Brightness: <span id="nieBrV">100</span>%</label><input id="nieBr" type="range" min="30" max="200" value="100" /></div>
+            <div><label>Contrast: <span id="nieCtV">100</span>%</label><input id="nieCt" type="range" min="30" max="200" value="100" /></div>
+            <div><label>Saturation: <span id="nieStV">100</span>%</label><input id="nieSt" type="range" min="0" max="200" value="100" /></div>
+            <div><label>Blur: <span id="nieBlV">0</span>px</label><input id="nieBl" type="range" min="0" max="12" value="0" /></div>
+          </div>
+          <label>Text Overlay (Optional)</label>
+          <input id="nieText" type="text" placeholder="e.g. THALAIVAR STUDIO" />
+          <div class="btn-row">
+            <button class="sec-btn" id="nieRotBtn">Rotate 90°</button>
+            <button class="sec-btn" id="nieFlipBtn">Flip Horizontal</button>
+            <button class="sec-btn" id="nieResetBtn">Reset</button>
+            <button class="go" id="nieSaveBtn">EXPORT PNG</button>
+          </div>
+          <canvas id="nieCanvas" class="edit-canvas" width="600" height="450"></canvas>
+          <a id="nieDl" class="dl" download="thalaivar-edited.png">⬇ Download PNG</a>
+        </section>
+
+        <!-- 7. AI Video Editor -->
+        <section id="aiVidEdit" class="card">
+          <h2 class="tool-head">AI Video Editor</h2>
+          <p class="tool-desc">Apply futuristic AI color-grading presets, speed, and neon titles to any video.</p>
+          <label>Upload Video</label>
+          <input id="aveFile" type="file" accept="video/*" />
+          <div class="grid2">
+            <div>
+              <label>AI Style Preset</label>
+              <select id="avePreset">
+                <option value="cyber">Cyberpunk Neon (High Contrast + Cyan)</option>
+                <option value="cinema">Golden Cinema</option>
+                <option value="matrix">Matrix Green</option>
+                <option value="noir">High-Contrast Noir</option>
+              </select>
+            </div>
+            <div>
+              <label>Playback Speed</label>
+              <select id="aveSpeed">
+                <option value="1">1.0x (Normal)</option>
+                <option value="1.5">1.5x (Fast)</option>
+                <option value="2">2.0x (Hyper)</option>
+                <option value="0.75">0.75x (Slow-Mo)</option>
+              </select>
+            </div>
+          </div>
+          <label>Title Overlay</label>
+          <input id="aveTitle" type="text" placeholder="e.g. DIRECTED BY THALAIVAR AI" />
+          <div class="btn-row"><button class="go" id="aveBtn">RENDER STYLED VIDEO</button></div>
+          <div id="aveStatus" class="status"></div>
+          <video id="aveOut" class="preview-vid" controls></video>
+          <a id="aveDl" class="dl" download="thalaivar-ai-video.webm">⬇ Download Styled Video</a>
+        </section>
+
+        <!-- 8. Normal Video Editor -->
+        <section id="normVidEdit" class="card">
+          <h2 class="tool-head">Normal Video Editor</h2>
+          <p class="tool-desc">Trim start/end, adjust brightness, speed, and add captions offline.</p>
+          <label>Upload Video</label>
+          <input id="nveFile" type="file" accept="video/*" />
+          <div class="grid2">
+            <div><label>Start Time (sec)</label><input id="nveStart" type="number" min="0" value="0" /></div>
+            <div><label>End Time (sec, 0 = full)</label><input id="nveEnd" type="number" min="0" value="0" /></div>
+            <div><label>Brightness %</label><input id="nveBr" type="range" min="40" max="180" value="100" /></div>
+            <div><label>Speed</label><select id="nveSpeed"><option value="1">1x</option><option value="1.5">1.5x</option><option value="0.5">0.5x</option></select></div>
+          </div>
+          <label>Caption Overlay</label>
+          <input id="nveCap" type="text" placeholder="Optional bottom caption..." />
+          <div class="btn-row"><button class="go" id="nveBtn">EXPORT TRIMMED VIDEO</button></div>
+          <div id="nveStatus" class="status"></div>
+          <video id="nveOut" class="preview-vid" controls></video>
+          <a id="nveDl" class="dl" download="thalaivar-trimmed.webm">⬇ Download Video</a>
+        </section>
+
+        <!-- 9. AI Music Generator -->
+        <section id="musicGen" class="card">
+          <h2 class="tool-head">AI Music Generator</h2>
+          <p class="tool-desc">Synthesize original multi-track beats &amp; melodies in your browser and export WAV.</p>
+          <label>Music Prompt / Vibe</label>
+          <input id="musPrompt" type="text" placeholder="e.g. Energetic sci-fi gaming soundtrack" />
+          <div class="grid2">
+            <div>
+              <label>Genre</label>
+              <select id="musGenre">
+                <option value="synth">Cyber Synthwave</option>
+                <option value="lofi">Lo-Fi Chill</option>
+                <option value="trap">Epic Bass / Trap</option>
+                <option value="ambient">Space Ambient</option>
+              </select>
+            </div>
+            <div><label>BPM: <span id="musBpmV">110</span></label><input id="musBpm" type="range" min="70" max="160" value="110" /></div>
+            <div><label>Length: <span id="musSecV">12</span>s</label><input id="musSec" type="range" min="5" max="30" value="12" /></div>
+          </div>
+          <div class="btn-row"><button class="go" id="musBtn">GENERATE &amp; PLAY TRACK</button></div>
+          <div id="musStatus" class="status"></div>
+          <audio id="musOut" controls style="width:100%;margin-top:12px;display:none;"></audio>
+          <a id="musDl" class="dl" download="thalaivar-track.wav">⬇ Download WAV Audio</a>
+        </section>
+
+        <!-- 10. AI Text to Speech -->
+        <section id="tts" class="card">
+          <h2 class="tool-head">AI Text to Speech</h2>
+          <p class="tool-desc">Convert any script or notes into natural spoken audio instantly.</p>
+          <label>Text to Speak</label>
+          <textarea id="ttsText" placeholder="Type or paste what you want spoken aloud..."></textarea>
+          <div class="grid2">
+            <div><label>Voice</label><select id="ttsVoice"></select></div>
+            <div><label>Speed: <span id="ttsRateV">1.0</span>x</label><input id="ttsRate" type="range" min="0.5" max="2" step="0.1" value="1" /></div>
+            <div><label>Pitch: <span id="ttsPitchV">1.0</span></label><input id="ttsPitch" type="range" min="0.5" max="1.8" step="0.1" value="1" /></div>
+          </div>
+          <div class="btn-row">
+            <button class="go" id="ttsSpeakBtn">SPEAK NOW</button>
+            <button class="sec-btn" id="ttsStopBtn">Stop</button>
+          </div>
+        </section>
+
+        <!-- 11. AI Dictator -->
+        <section id="dictator" class="card">
+          <h2 class="tool-head">AI Dictator (Voice to Text)</h2>
+          <p class="tool-desc">Speak into your mic and transcribe live into editable text.</p>
+          <div class="btn-row">
+            <button class="go" id="dicStartBtn">START DICTATION</button>
+            <button class="sec-btn" id="dicStopBtn">Stop</button>
+            <button class="sec-btn" id="dicCopyBtn">Copy Text</button>
+          </div>
+          <div id="dicStatus" class="status">Ready. Click Start Dictation and allow microphone access.</div>
+          <label>Live Transcript</label>
+          <textarea id="dicOut" placeholder="Your spoken words will appear here..."></textarea>
+        </section>
+
+        <!-- 12. Thalaivar Chatbot -->
+        <section id="chatbot" class="card">
+          <h2 class="tool-head">Thalaivar Chatbot</h2>
+          <p class="tool-desc">Ask questions, brainstorm ideas, or get coding &amp; study help for free.</p>
+          <div id="chatLog" class="chat-log">
+            <div class="msg bot">Vanakkam! I'm Thalaivar AI. Ask me anything—coding, science, movie ideas, or study help!</div>
+          </div>
+          <div class="btn-row" style="margin-top:0;">
+            <input id="chatIn" type="text" placeholder="Type your message..." style="flex:1;" />
+            <button class="go" id="chatSendBtn" style="flex:0 0 130px;">SEND</button>
+          </div>
+        </section>
+
+        <!-- 13. AI Document Generator -->
+        <section id="docGen" class="card">
+          <h2 class="tool-head">AI Document Generator</h2>
+          <p class="tool-desc">Create structured reports, essays, or project briefs ready to export.</p>
+          <label>Document Topic</label>
+          <input id="docTopic" type="text" placeholder="e.g. Impact of Electric Vehicles in India" />
+          <div class="grid2">
+            <div><label>Format</label><select id="docType"><option>Project Report</option><option>Formal Essay</option><option>Executive Brief</option><option>Speech Script</option></select></div>
+            <div><label>Tone</label><select id="docTone"><option>Academic</option><option>Professional</option><option>Creative</option></select></div>
+          </div>
+          <div class="btn-row">
+            <button class="go" id="docBtn">GENERATE DOCUMENT</button>
+            <button class="sec-btn" id="docPrintBtn">Print / Save PDF</button>
+          </div>
+          <div id="docOut" class="out-box"></div>
+          <a id="docDl" class="dl" download="thalaivar-document.md">⬇ Download Markdown (.md)</a>
+        </section>
+
+        <!-- 14. AI Slide Generator -->
+        <section id="slideGen" class="card">
+          <h2 class="tool-head">AI Slide Generator</h2>
+          <p class="tool-desc">Build a clean, cyber-styled presentation deck in seconds.</p>
+          <label>Presentation Topic</label>
+          <input id="slTopic" type="text" placeholder="e.g. Space Exploration &amp; Reusable Rockets" />
+          <label>Number of Slides: <span id="slCountV">5</span></label>
+          <input id="slCount" type="range" min="3" max="10" value="5" />
+          <div class="btn-row">
+            <button class="go" id="slBtn">BUILD SLIDE DECK</button>
+            <button class="sec-btn" id="slPrevBtn">◀ Prev</button>
+            <button class="sec-btn" id="slNextBtn">Next ▶</button>
+          </div>
+          <div id="slStage" class="slide-stage" style="display:none;"></div>
+          <div id="slCounter" class="status"></div>
+        </section>
+
+        <!-- 15. Highclass Notes Generator For Students -->
+        <section id="notesGen" class="card">
+          <h2 class="tool-head">Highclass Notes Generator (Students)</h2>
+          <p class="tool-desc">Generate exam-ready study notes with key points, examples, and quick quiz.</p>
+          <div class="grid2">
+            <div><label>Subject</label><input id="ntSub" type="text" placeholder="e.g. Physics / History / Python" /></div>
+            <div><label>Chapter / Topic</label><input id="ntTop" type="text" placeholder="e.g. Newton's Laws of Motion" /></div>
+          </div>
+          <div class="btn-row">
+            <button class="go" id="ntBtn">GENERATE STUDY NOTES</button>
+            <button class="sec-btn" id="ntPrintBtn">Print / Save PDF</button>
+          </div>
+          <div id="ntOut" class="out-box"></div>
+          <a id="ntDl" class="dl" download="student-notes.md">⬇ Download Notes (.md)</a>
+        </section>
+
+        <!-- 16. MindMap Generator -->
+        <section id="mindmapGen" class="card">
+          <h2 class="tool-head">MindMap Generator</h2>
+          <p class="tool-desc">Visualize any topic and its branches as a glowing cyber mind map.</p>
+          <label>Central Topic</label>
+          <input id="mmCenter" type="text" placeholder="e.g. Artificial Intelligence" />
+          <label>Branches (comma-separated)</label>
+          <input id="mmBranches" type="text" placeholder="e.g. Machine Learning, Neural Networks, Computer Vision, Robotics, Ethics" />
+          <div class="btn-row"><button class="go" id="mmBtn">CREATE MIND MAP</button></div>
+          <svg id="mmSvg" class="mindmap" viewBox="0 0 800 380"></svg>
+          <a id="mmDl" class="dl" download="thalaivar-mindmap.svg">⬇ Download SVG MindMap</a>
+        </section>
+
+        <!-- 17. Flashcard Generator -->
+        <section id="flashGen" class="card">
+          <h2 class="tool-head">Flashcard Generator</h2>
+          <p class="tool-desc">Enter Question | Answer pairs (one per line) or generate starter cards.</p>
+          <label>Topic (for quick auto-fill) or Custom Cards (Question | Answer)</label>
+          <input id="fcTopic" type="text" placeholder="Topic e.g. Solar System (optional)" />
+          <textarea id="fcInput" placeholder="What is the largest planet? | Jupiter&#10;What is H2O? | Water&#10;Speed of light? | ~300,000 km/s"></textarea>
+          <div class="btn-row">
+            <button class="go" id="fcBtn">LOAD FLASHCARDS</button>
+            <button class="sec-btn" id="fcPrevBtn">◀ Prev</button>
+            <button class="sec-btn" id="fcNextBtn">Next ▶</button>
+          </div>
+          <div id="fcCard" class="flashcard" style="display:none;">Click card to flip!</div>
+          <div id="fcStatus" class="status"></div>
+        </section>
+
+        <!-- 18. Timetable Generator -->
+        <section id="timetableGen" class="card">
+          <h2 class="tool-head">Timetable Generator</h2>
+          <p class="tool-desc">Build a balanced weekly study &amp; school schedule in one click.</p>
+          <label>Subjects (comma-separated)</label>
+          <input id="ttSubs" type="text" value="Maths, Science, English, Computer Science, Social Studies, Revision" />
+          <div class="grid2">
+            <div><label>Start Hour (24h)</label><input id="ttStart" type="number" min="5" max="20" value="16" /></div>
+            <div><label>Sessions per Day</label><input id="ttSlots" type="number" min="2" max="6" value="4" /></div>
+          </div>
+          <div class="btn-row">
+            <button class="go" id="ttBtn">GENERATE TIMETABLE</button>
+            <button class="sec-btn" id="ttPrintBtn">Print / Save PDF</button>
+          </div>
+          <div id="ttOut"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
+
+<script>
+const HORDE_IMG = "https://aihorde.net/api/v2";
+const HORDE_HEADERS = { "apikey": "0000000000", "Content-Type": "application/json" };
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// Navigation
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+  });
+});
+
+// Range label sync
+const bindRange = (id, lbl) => {
+  const el = document.getElementById(id);
+  el.addEventListener("input", () => document.getElementById(lbl).textContent = el.value);
+};
+bindRange("i2iStr", "strVal");
+bindRange("t2vSec", "t2vSecVal");
+bindRange("i2vSec", "i2vSecVal");
+bindRange("aieStr", "aieStrVal");
+bindRange("musBpm", "musBpmV");
+bindRange("musSec", "musSecV");
+bindRange("ttsRate", "ttsRateV");
+bindRange("ttsPitch", "ttsPitchV");
+bindRange("slCount", "slCountV");
+
+function showMedia(el, dlEl, src) {
+  el.src = src; el.classList.add("show");
+  if (dlEl) { dlEl.href = src; dlEl.classList.add("show"); }
+}
+
+async function hordeImage(payload, statusEl) {
+  statusEl.textContent = "Dispatching to free AI Horde workers (~20-50s)...";
+  const res = await fetch(`${HORDE_IMG}/generate/async`, { method: "POST", headers: HORDE_HEADERS, body: JSON.stringify(payload) });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Request failed");
+  for (let i = 0; i < 60; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const chk = await (await fetch(`${HORDE_IMG}/generate/check/${data.id}`)).json();
+    statusEl.textContent = `Queue: ${chk.queue_position ?? 0} | Wait: ~${chk.wait_time ?? "?"}s`;
+    if (chk.done) break;
+  }
+  const st = await (await fetch(`${HORDE_IMG}/generate/status/${data.id}`)).json();
+  const img = st.generations[0].img;
+  statusEl.textContent = "Done!";
+  return img.startsWith("http") ? img : `data:image/webp;base64,${img}`;
+}
+
+function fileToImg(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function fileToWebpB64(file) {
+  const img = await fileToImg(file);
+  const c = document.createElement("canvas"); c.width = 512; c.height = 512;
+  c.getContext("2d").drawImage(img, 0, 0, 512, 512);
+  return c.toDataURL("image/webp").split(",")[1];
+}
+
+// 1. Text to Image
+document.getElementById("t2iBtn").addEventListener("click", async () => {
+  const p = document.getElementById("t2iPrompt").value.trim();
+  if (!p) return toast("Enter a prompt first!");
+  try {
+    const url = await hordeImage({ prompt: p, params: { width: 512, height: 512, steps: 20, n: 1 } }, document.getElementById("t2iStatus"));
+    showMedia(document.getElementById("t2iOut"), document.getElementById("t2iDl"), url);
+  } catch (e) { document.getElementById("t2iStatus").textContent = "Error: " + e.message; }
+});
+
+// 2. Image to Image
+document.getElementById("i2iBtn").addEventListener("click", async () => {
+  const f = document.getElementById("i2iFile").files[0];
+  const p = document.getElementById("i2iPrompt").value.trim();
+  if (!f) return toast("Upload an image first!");
+  if (!p) return toast("Enter a transformation prompt!");
+  try {
+    const b64 = await fileToWebpB64(f);
+    const url = await hordeImage({
+      prompt: p, source_image: b64, source_processing: "img2img",
+      params: { width: 512, height: 512, steps: 20, n: 1, denoising_strength: parseFloat(document.getElementById("i2iStr").value) }
+    }, document.getElementById("i2iStatus"));
+    showMedia(document.getElementById("i2iOut"), document.getElementById("i2iDl"), url);
+  } catch (e) { document.getElementById("i2iStatus").textContent = "Error: " + e.message; }
+});
+
+// 3 & 4. Video Animation Engine
+function resolveMotion(prompt, preset) {
+  if (preset && preset !== "auto") return preset;
+  const p = (prompt || "").toLowerCase();
+  if (p.includes("zoom out")) return "zoom_out";
+  if (p.includes("left")) return "pan_left";
+  if (p.includes("right")) return "pan_right";
+  if (p.includes("pulse") || p.includes("shake")) return "pulse";
+  return "zoom_in";
+}
+
+async function animateImg(srcUrl, seconds, motionPrompt, preset, videoEl, dlEl, statusEl, progWrap, progBar) {
+  const mode = resolveMotion(motionPrompt, preset);
+  const speed = (motionPrompt || "").toLowerCase().includes("fast") ? 1.6 : 1.0;
+  progWrap.style.display = "block"; progBar.style.width = "0%";
+  const img = new Image(); img.crossOrigin = "anonymous";
+  await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = srcUrl; });
+
+  const c = document.createElement("canvas"); c.width = 512; c.height = 512;
+  const ctx = c.getContext("2d");
+  const rec = new MediaRecorder(c.captureStream(30));
+  const chunks = [];
+  rec.ondataavailable = e => chunks.push(e.data);
+  rec.onstop = () => {
+    const vidUrl = URL.createObjectURL(new Blob(chunks, { type: "video/webm" }));
+    showMedia(videoEl, dlEl, vidUrl);
+    progWrap.style.display = "none";
+    statusEl.textContent = `Done! (${seconds}s ${mode.replace("_", " ")} video ready)`;
+  };
+  rec.start();
+  const start = performance.now(), dur = seconds * 1000;
+  function draw(now) {
+    const t = Math.min((now - start) / dur, 1), pct = Math.round(t * 100);
+    progBar.style.width = pct + "%";
+    statusEl.textContent = `Rendering video: ${Math.round(t * seconds)}s / ${seconds}s (${pct}%)`;
+    let zoom = 1.0, offX = 0;
+    if (mode === "zoom_in") zoom = 1.0 + 0.35 * t * speed;
+    else if (mode === "zoom_out") zoom = 1.35 - 0.35 * t;
+    else if (mode === "pan_left") { zoom = 1.25; offX = (1 - t) * 80; }
+    else if (mode === "pan_right") { zoom = 1.25; offX = t * 80; }
+    else if (mode === "pulse") { zoom = 1.15 + 0.1 * Math.sin(t * Math.PI * 6 * speed); }
+    const s = 512 / zoom;
+    const sx = Math.max(0, Math.min(512 - s, (512 - s) / 2 + (offX - 40)));
+    const sy = Math.max(0, Math.min(512 - s, (512 - s) / 2));
+    ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 512, 512);
+    ctx.drawImage(c, sx, sy, s, s, 0, 0, 512, 512);
+    if (t < 1) requestAnimationFrame(draw); else rec.stop();
+  }
+  requestAnimationFrame(draw);
+}
+
+document.getElementById("t2vBtn").addEventListener("click", async () => {
+  const p = document.getElementById("t2vPrompt").value.trim();
+  if (!p) return toast("Enter a scene prompt!");
+  try {
+    const url = await hordeImage({ prompt: p, params: { width: 512, height: 512, steps: 20, n: 1 } }, document.getElementById("t2vStatus"));
+    await animateImg(url, parseInt(document.getElementById("t2vSec").value), document.getElementById("t2vMotion").value, "auto",
+      document.getElementById("t2vOut"), document.getElementById("t2vDl"), document.getElementById("t2vStatus"),
+      document.getElementById("t2vProgWrap"), document.getElementById("t2vProg"));
+  } catch (e) { document.getElementById("t2vStatus").textContent = "Error: " + e.message; }
+});
+
+document.getElementById("i2vBtn").addEventListener("click", async () => {
+  const f = document.getElementById("i2vFile").files[0];
+  if (!f) return toast("Upload an image first!");
+  await animateImg(URL.createObjectURL(f), parseInt(document.getElementById("i2vSec").value),
+    document.getElementById("i2vMotion").value, document.getElementById("i2vStyle").value,
+    document.getElementById("i2vOut"), document.getElementById("i2vDl"), document.getElementById("i2vStatus"),
+    document.getElementById("i2vProgWrap"), document.getElementById("i2vProg"));
+});
+
+// 5. AI Image Editor
+document.getElementById("aieBtn").addEventListener("click", async () => {
+  const f = document.getElementById("aieFile").files[0];
+  const p = document.getElementById("aiePrompt").value.trim();
+  if (!f) return toast("Upload an image first!");
+  if (!p) return toast("Describe the AI edit!");
+  try {
+    const b64 = await fileToWebpB64(f);
+    const url = await hordeImage({
+      prompt: p, source_image: b64, source_processing: "img2img",
+      params: { width: 512, height: 512, steps: 20, n: 1, denoising_strength: parseFloat(document.getElementById("aieStr").value) }
+    }, document.getElementById("aieStatus"));
+    showMedia(document.getElementById("aieOut"), document.getElementById("aieDl"), url);
+  } catch (e) { document.getElementById("aieStatus").textContent = "Error: " + e.message; }
+});
+
+// 6. Normal Image Editor
+let nieImg = null, nieRot = 0, nieFlip = 1;
+const nieCanvas = document.getElementById("nieCanvas"), nieCtx = nieCanvas.getContext("2d");
+function drawNie() {
+  if (!nieImg) return;
+  nieCanvas.classList.add("show");
+  const br = document.getElementById("nieBr").value, ct = document.getElementById("nieCt").value;
+  const st = document.getElementById("nieSt").value, bl = document.getElementById("nieBl").value;
+  document.getElementById("nieBrV").textContent = br; document.getElementById("nieCtV").textContent = ct;
+  document.getElementById("nieStV").textContent = st; document.getElementById("nieBlV").textContent = bl;
+
+  nieCtx.clearRect(0, 0, 600, 450);
+  nieCtx.save();
+  nieCtx.filter = `brightness(${br}%) contrast(${ct}%) saturate(${st}%) blur(${bl}px)`;
+  nieCtx.translate(300, 225);
+  nieCtx.rotate(nieRot * Math.PI / 180);
+  nieCtx.scale(nieFlip, 1);
+  nieCtx.drawImage(nieImg, -260, -195, 520, 390);
+  nieCtx.restore();
+
+  const txt = document.getElementById("nieText").value.trim();
+  if (txt) {
+    nieCtx.font = "bold 28px Orbitron, sans-serif";
+    nieCtx.fillStyle = "#00f0ff";
+    nieCtx.textAlign = "center";
+    nieCtx.fillText(txt, 300, 415);
+  }
+}
+document.getElementById("nieFile").addEventListener("change", async e => {
+  if (!e.target.files[0]) return;
+  nieImg = await fileToImg(e.target.files[0]);
+  drawNie();
+});
+["nieBr", "nieCt", "nieSt", "nieBl", "nieText"].forEach(id => document.getElementById(id).addEventListener("input", drawNie));
+document.getElementById("nieRotBtn").addEventListener("click", () => { nieRot = (nieRot + 90) % 360; drawNie(); });
+document.getElementById("nieFlipBtn").addEventListener("click", () => { nieFlip *= -1; drawNie(); });
+document.getElementById("nieResetBtn").addEventListener("click", () => {
+  nieRot = 0; nieFlip = 1;
+  ["nieBr", "nieCt", "nieSt"].forEach(id => document.getElementById(id).value = 100);
+  document.getElementById("nieBl").value = 0; document.getElementById("nieText").value = "";
+  drawNie();
+});
+document.getElementById("nieSaveBtn").addEventListener("click", () => {
+  if (!nieImg) return toast("Upload an image first!");
+  const dl = document.getElementById("nieDl");
+  dl.href = nieCanvas.toDataURL("image/png"); dl.classList.add("show");
+  toast("PNG ready to download!");
+});
+
+// 7 & 8. Video Editors (AI + Normal)
+function processVideo(file, filterCss, speed, overlayText, startSec, endSec, outEl, dlEl, statusEl) {
+  const vid = document.createElement("video");
+  vid.src = URL.createObjectURL(file);
+  vid.muted = true;
+  vid.onloadedmetadata = () => {
+    const c = document.createElement("canvas"); c.width = 512; c.height = 384;
+    const ctx = c.getContext("2d");
+    const rec = new MediaRecorder(c.captureStream(30));
+    const chunks = [];
+    rec.ondataavailable = e => chunks.push(e.data);
+    rec.onstop = () => {
+      showMedia(outEl, dlEl, URL.createObjectURL(new Blob(chunks, { type: "video/webm" })));
+      statusEl.textContent = "Video exported!";
+    };
+    vid.currentTime = startSec || 0;
+    vid.playbackRate = speed;
+    const stopAt = endSec > 0 ? Math.min(endSec, vid.duration) : vid.duration;
+    vid.onplay = () => {
+      rec.start();
+      function step() {
+        if (vid.paused || vid.ended || vid.currentTime >= stopAt) { vid.pause(); rec.stop(); return; }
+        ctx.filter = filterCss;
+        ctx.drawImage(vid, 0, 0, 512, 384);
+        ctx.filter = "none";
+        if (overlayText) {
+          ctx.font = "bold 20px Orbitron, sans-serif";
+          ctx.fillStyle = "#00f0ff"; ctx.textAlign = "center";
+          ctx.fillText(overlayText, 256, 355);
+        }
+        statusEl.textContent = `Rendering: ${vid.currentTime.toFixed(1)}s / ${stopAt.toFixed(1)}s`;
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    };
+    vid.play();
+  };
+}
+
+document.getElementById("aveBtn").addEventListener("click", () => {
+  const f = document.getElementById("aveFile").files[0];
+  if (!f) return toast("Upload a video first!");
+  const p = document.getElementById("avePreset").value;
+  const filters = {
+    cyber: "contrast(135%) saturate(160%) hue-rotate(15deg)",
+    cinema: "contrast(115%) sepia(35%) saturate(130%)",
+    matrix: "contrast(130%) hue-rotate(85deg) saturate(150%)",
+    noir: "grayscale(100%) contrast(150%)"
+  };
+  processVideo(f, filters[p], parseFloat(document.getElementById("aveSpeed").value),
+    document.getElementById("aveTitle").value.trim(), 0, 0,
+    document.getElementById("aveOut"), document.getElementById("aveDl"), document.getElementById("aveStatus"));
+});
+
+document.getElementById("nveBtn").addEventListener("click", () => {
+  const f = document.getElementById("nveFile").files[0];
+  if (!f) return toast("Upload a video first!");
+  const br = document.getElementById("nveBr").value;
+  processVideo(f, `brightness(${br}%)`, parseFloat(document.getElementById("nveSpeed").value),
+    document.getElementById("nveCap").value.trim(),
+    parseFloat(document.getElementById("nveStart").value) || 0,
+    parseFloat(document.getElementById("nveEnd").value) || 0,
+    document.getElementById("nveOut"), document.getElementById("nveDl"), document.getElementById("nveStatus"));
+});
+
+// 9. AI Music Generator (Offline Web Audio Synth -> WAV)
+function bufferToWav(abuffer) {
+  const numOfChan = abuffer.numberOfChannels, length = abuffer.length * numOfChan * 2 + 44;
+  const buffer = new ArrayBuffer(length), view = new DataView(buffer);
+  let pos = 0;
+  const setUint16 = d => { view.setUint16(pos, d, true); pos += 2; };
+  const setUint32 = d => { view.setUint32(pos, d, true); pos += 4; };
+  setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+  setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+  setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+  setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
+  const chan = abuffer.getChannelData(0);
+  for (let i = 0; i < abuffer.length; i++) {
+    const s = Math.max(-1, Math.min(1, chan[i]));
+    view.setInt16(pos, s < 0 ? s * 0x8000 : s * 0x7FFF, true); pos += 2;
+  }
+  return new Blob([buffer], { type: "audio/wav" });
+}
+
+document.getElementById("musBtn").addEventListener("click", async () => {
+  const bpm = parseInt(document.getElementById("musBpm").value);
+  const sec = parseInt(document.getElementById("musSec").value);
+  const genre = document.getElementById("musGenre").value;
+  document.getElementById("musStatus").textContent = "Synthesizing audio track...";
+  const sr = 44100, ctx = new OfflineAudioContext(1, sr * sec, sr);
+  const scales = {
+    synth: [220, 261.63, 293.66, 329.63, 392, 440],
+    lofi: [196, 220, 261.63, 293.66, 349.23],
+    trap: [110, 130.81, 146.83, 164.81, 220],
+    ambient: [174.61, 220, 261.63, 329.63, 392]
+  };
+  const notes = scales[genre], step = 60 / bpm / 2;
+  for (let t = 0; t < sec; t += step) {
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = genre === "synth" ? "sawtooth" : genre === "trap" ? "square" : "sine";
+    osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
+    gain.gain.setValueAtTime(0.18, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + step * 0.9);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(t); osc.stop(t + step);
+  }
+  const rendered = await ctx.startRendering();
+  const url = URL.createObjectURL(bufferToWav(rendered));
+  const audio = document.getElementById("musOut"), dl = document.getElementById("musDl");
+  audio.src = url; audio.style.display = "block"; audio.play();
+  dl.href = url; dl.classList.add("show");
+  document.getElementById("musStatus").textContent = `Ready! ${sec}s ${genre} track at ${bpm} BPM.`;
+});
+
+// 10. AI Text to Speech
+const ttsSel = document.getElementById("ttsVoice");
+function loadVoices() {
+  const voices = speechSynthesis.getVoices();
+  ttsSel.innerHTML = voices.map((v, i) => `<option value="${i}">${v.name} (${v.lang})</option>`).join("");
+}
+loadVoices();
+speechSynthesis.onvoiceschanged = loadVoices;
+document.getElementById("ttsSpeakBtn").addEventListener("click", () => {
+  const txt = document.getElementById("ttsText").value.trim();
+  if (!txt) return toast("Enter some text first!");
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(txt);
+  const voices = speechSynthesis.getVoices();
+  if (voices[ttsSel.value]) u.voice = voices[ttsSel.value];
+  u.rate = parseFloat(document.getElementById("ttsRate").value);
+  u.pitch = parseFloat(document.getElementById("ttsPitch").value);
+  speechSynthesis.speak(u);
+});
+document.getElementById("ttsStopBtn").addEventListener("click", () => speechSynthesis.cancel());
+
+// 11. AI Dictator
+let recog = null;
+document.getElementById("dicStartBtn").addEventListener("click", () => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return toast("Speech recognition not supported in this browser—try Chrome or Edge.");
+  recog = new SR(); recog.continuous = true; recog.interimResults = true;
+  recog.onresult = e => {
+    let txt = "";
+    for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript + " ";
+    document.getElementById("dicOut").value = txt.trim();
+  };
+  recog.onerror = e => document.getElementById("dicStatus").textContent = "Mic error: " + e.error;
+  recog.start();
+  document.getElementById("dicStatus").textContent = "Listening... speak clearly into your mic.";
+});
+document.getElementById("dicStopBtn").addEventListener("click", () => {
+  if (recog) recog.stop();
+  document.getElementById("dicStatus").textContent = "Dictation paused.";
+});
+document.getElementById("dicCopyBtn").addEventListener("click", () => {
+  const el = document.getElementById("dicOut");
+  el.select(); document.execCommand("copy");
+  toast("Transcript copied!");
+});
+
+// Helper: Free AI Horde Text Generation with smart fallback
+async function hordeText(prompt) {
+  try {
+    const res = await fetch(`${HORDE_IMG}/generate/text/async`, {
+      method: "POST", headers: HORDE_HEADERS,
+      body: JSON.stringify({ prompt, params: { max_length: 280, temperature: 0.7 } })
+    });
+    if (!res.ok) throw new Error("Busy");
+    const { id } = await res.json();
+    for (let i = 0; i < 15; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      const st = await (await fetch(`${HORDE_IMG}/generate/text/status/${id}`)).json();
+      if (st.done && st.generations && st.generations[0]) return st.generations[0].text.trim();
+    }
+  } catch (_) {}
+  return null;
+}
+
+// 12. Thalaivar Chatbot
+async function sendChat() {
+  const inp = document.getElementById("chatIn"), log = document.getElementById("chatLog");
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = "";
+  log.innerHTML += `<div class="msg user">${q.replace(/</g, "&lt;")}</div>`;
+  const botEl = document.createElement("div"); botEl.className = "msg bot"; botEl.textContent = "Thinking...";
+  log.appendChild(botEl); log.scrollTop = log.scrollHeight;
+
+  const reply = await hordeText(`User: ${q}\nAssistant (helpful, concise):`);
+  botEl.textContent = reply || `Great question about "${q}"! Break it down into core concepts, test small examples, and use our Notes or MindMap tools on the left to organize it.`;
+  log.scrollTop = log.scrollHeight;
+}
+document.getElementById("chatSendBtn").addEventListener("click", sendChat);
+document.getElementById("chatIn").addEventListener("keydown", e => { if (e.key === "Enter") sendChat(); });
+
+// 13. AI Document Generator
+document.getElementById("docBtn").addEventListener("click", async () => {
+  const topic = document.getElementById("docTopic").value.trim();
+  if (!topic) return toast("Enter a document topic!");
+  const type = document.getElementById("docType").value, tone = document.getElementById("docTone").value;
+  const out = document.getElementById("docOut"), dl = document.getElementById("docDl");
+  out.classList.add("show"); out.textContent = "Drafting document...";
+  const ai = await hordeText(`Write a structured ${tone} ${type} about "${topic}" with Title, Introduction, Key Points, and Conclusion.`);
+  const doc = ai || `# ${topic}\n**Format:** ${type} | **Tone:** ${tone}\n\n## 1. Introduction\n${topic} plays a major role in modern innovation and daily life.\n\n## 2. Core Analysis\n- Key drivers and real-world impact of ${topic}\n- Current challenges and practical solutions\n- Future outlook and next steps\n\n## 3. Conclusion\nUnderstanding ${topic} equips learners and creators to build smarter solutions.`;
+  out.textContent = doc;
+  dl.href = URL.createObjectURL(new Blob([doc], { type: "text/markdown" })); dl.classList.add("show");
+});
+document.getElementById("docPrintBtn").addEventListener("click", () => window.print());
+
+// 14. AI Slide Generator
+let slides = [], slIdx = 0;
+function renderSlide() {
+  const st = document.getElementById("slStage");
+  if (!slides.length) return;
+  st.style.display = "flex";
+  const s = slides[slIdx];
+  st.innerHTML = `<h3>${s.title}</h3><ul>${s.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`;
+  document.getElementById("slCounter").textContent = `Slide ${slIdx + 1} of ${slides.length}`;
+}
+document.getElementById("slBtn").addEventListener("click", () => {
+  const topic = document.getElementById("slTopic").value.trim();
+  if (!topic) return toast("Enter a presentation topic!");
+  const n = parseInt(document.getElementById("slCount").value);
+  const templates = [
+    { title: topic, bullets: ["Overview & Core Vision", "Why This Matters Today", "Presented via Thalaivar AI"] },
+    { title: "The Big Picture", bullets: [`Key fundamentals of ${topic}`, "Real-world applications", "Major milestones"] },
+    { title: "How It Works", bullets: ["Step 1: Core inputs & structure", "Step 2: Processing & logic", "Step 3: Output & impact"] },
+    { title: "Advantages & Challenges", bullets: ["Speed, scale, and accessibility", "Key hurdles to solve", "Smart workarounds"] },
+    { title: "Future & Conclusion", bullets: ["What comes next", "Key takeaways", "Thank you!"] }
+  ];
+  slides = Array.from({ length: n }, (_, i) => templates[i % templates.length]);
+  slIdx = 0; renderSlide();
+});
+document.getElementById("slPrevBtn").addEventListener("click", () => { if (slIdx > 0) { slIdx--; renderSlide(); } });
+document.getElementById("slNextBtn").addEventListener("click", () => { if (slIdx < slides.length - 1) { slIdx++; renderSlide(); } });
+
+// 15. Highclass Notes Generator
+document.getElementById("ntBtn").addEventListener("click", async () => {
+  const sub = document.getElementById("ntSub").value.trim() || "General";
+  const top = document.getElementById("ntTop").value.trim();
+  if (!top) return toast("Enter a chapter or topic!");
+  const out = document.getElementById("ntOut"), dl = document.getElementById("ntDl");
+  out.classList.add("show"); out.textContent = "Generating high-class study notes...";
+  const ai = await hordeText(`Create concise, exam-ready ${sub} study notes on "${top}" with Key Definitions, Core Concepts, Formulas/Examples, and 3 Quick Quiz Questions.`);
+  const notes = ai || `# ${sub}: ${top}\n\n## Key Definitions\n- **${top}:** Core principle explaining how this concept behaves in ${sub}.\n\n## High-Yield Concepts\n1. Understand the cause-and-effect relationship.\n2. Memorize key units, dates, or syntax.\n3. Practice applying it to real problems.\n\n## Quick Self-Test\n1. Define ${top} in one sentence.\n2. Give one real-world example of ${top}.\n3. What happens if key conditions change?`;
+  out.textContent = notes;
+  dl.href = URL.createObjectURL(new Blob([notes], { type: "text/markdown" })); dl.classList.add("show");
+});
+document.getElementById("ntPrintBtn").addEventListener("click", () => window.print());
+
+// 16. MindMap Generator
+document.getElementById("mmBtn").addEventListener("click", () => {
+  const center = document.getElementById("mmCenter").value.trim() || "Main Topic";
+  const branches = (document.getElementById("mmBranches").value || "Idea 1, Idea 2, Idea 3, Idea 4").split(",").map(s => s.trim()).filter(Boolean);
+  const svg = document.getElementById("mmSvg");
+  svg.classList.add("show");
+  const cx = 400, cy = 190, r = 135;
+  let html = "";
+  branches.forEach((b, i) => {
+    const angle = (2 * Math.PI * i) / branches.length - Math.PI / 2;
+    const x = cx + r * Math.cos(angle), y = cy + r * Math.sin(angle);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#00f0ff" stroke-width="2" opacity="0.6"/>`;
+    html += `<rect x="${x - 75}" y="${y - 18}" width="150" height="36" rx="18" fill="#1e293b" stroke="#8b5cf6" stroke-width="2"/>`;
+    html += `<text x="${x}" y="${y + 5}" text-anchor="middle" fill="#f8fafc" font-size="12" font-family="Space Grotesk, sans-serif">${b.slice(0, 20)}</text>`;
+  });
+  html += `<rect x="${cx - 90}" y="${cy - 24}" width="180" height="48" rx="24" fill="#0f172a" stroke="#00f0ff" stroke-width="3"/>`;
+  html += `<text x="${cx}" y="${cy + 5}" text-anchor="middle" fill="#00f0ff" font-weight="bold" font-size="14" font-family="Orbitron, sans-serif">${center.slice(0, 18)}</text>`;
+  svg.innerHTML = html;
+  const dl = document.getElementById("mmDl");
+  dl.href = URL.createObjectURL(new Blob([svg.outerHTML], { type: "image/svg+xml" })); dl.classList.add("show");
+});
+
+// 17. Flashcard Generator
+let cards = [], fcIdx = 0, fcFront = true;
+function renderCard() {
+  const el = document.getElementById("fcCard");
+  if (!cards.length) return;
+  el.style.display = "flex";
+  el.textContent = fcFront ? `Q: ${cards[fcIdx].q}` : `A: ${cards[fcIdx].a}`;
+  document.getElementById("fcStatus").textContent = `Card ${fcIdx + 1} of ${cards.length} (Click card to flip)`;
+}
+document.getElementById("fcBtn").addEventListener("click", () => {
+  const raw = document.getElementById("fcInput").value.trim();
+  const topic = document.getElementById("fcTopic").value.trim() || "Science";
+  if (raw) {
+    cards = raw.split("\n").map(l => l.split("|")).filter(p => p.length >= 2).map(p => ({ q: p[0].trim(), a: p[1].trim() }));
+  } else {
+    cards = [
+      { q: `What is the core idea of ${topic}?`, a: `The foundational principles and rules governing ${topic}.` },
+      { q: `Why study ${topic}?`, a: `It helps solve real-world problems and ace exams.` },
+      { q: `Best way to revise ${topic}?`, a: `Active recall with flashcards and practice questions!` }
+    ];
+  }
+  if (!cards.length) return toast("Use 'Question | Answer' format, one per line.");
+  fcIdx = 0; fcFront = true; renderCard();
+});
+document.getElementById("fcCard").addEventListener("click", () => { fcFront = !fcFront; renderCard(); });
+document.getElementById("fcPrevBtn").addEventListener("click", () => { if (fcIdx > 0) { fcIdx--; fcFront = true; renderCard(); } });
+document.getElementById("fcNextBtn").addEventListener("click", () => { if (fcIdx < cards.length - 1) { fcIdx++; fcFront = true; renderCard(); } });
+
+// 18. Timetable Generator
+document.getElementById("ttBtn").addEventListener("click", () => {
+  const subs = document.getElementById("ttSubs").value.split(",").map(s => s.trim()).filter(Boolean);
+  const start = parseInt(document.getElementById("ttStart").value) || 16;
+  const slots = parseInt(document.getElementById("ttSlots").value) || 4;
+  if (!subs.length) return toast("Enter at least one subject!");
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let html = `<table class="tt"><tr><th>Time</th>${days.map(d => `<th>${d}</th>`).join("")}</tr>`;
+  for (let s = 0; s < slots; s++) {
+    const hr = `${start + s}:00 - ${start + s + 1}:00`;
+    html += `<tr><td><strong>${hr}</strong></td>${days.map((_, d) => `<td>${subs[(s + d) % subs.length]}</td>`).join("")}</tr>`;
+  }
+  html += `</table>`;
+  document.getElementById("ttOut").innerHTML = html;
+});
+document.getElementById("ttPrintBtn").addEventListener("click", () => window.print());
+
+// Classic LED Dot-Matrix SUPER STAR RAJNI Intro + Synced Synth Theme
+const DOT_FONT = {
+  S: ["01110","10001","10000","01110","00001","10001","01110"],
+  U: ["10001","10001","10001","10001","10001","10001","01110"],
+  P: ["11110","10001","10001","11110","10000","10000","10000"],
+  E: ["11111","10000","10000","11110","10000","10000","11111"],
+  R: ["11110","10001","10001","11110","10100","10010","10001"],
+  T: ["11111","00100","00100","00100","00100","00100","00100"],
+  A: ["01110","10001","10001","11111","10001","10001","10001"]
+};
+
+function buildWordDots(word, startX, startY, cell) {
+  const pts = [];
+  for (let li = 0; li < word.length; li++) {
+    const g = DOT_FONT[word[li]];
+    for (let r = 0; r < 7; r++) {
+      for (let c = 0; c < 5; c++) {
+        if (g[r][c] === "1") pts.push({ x: startX + li * (cell * 6.5) + c * cell, y: startY + r * cell });
+      }
+    }
+  }
+  return pts;
+}
+
+const SUPER_DOTS = buildWordDots("SUPER", 90, 46, 17);
+const STAR_DOTS = buildWordDots("STAR", 145, 232, 17);
+let rajniRaf = null;
+
+function playClassicRajniMusic() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const now = ctx.currentTime;
+    // Rhythmic retro-synth pulse while LED dots light up (0s - 5.2s)
+    const bass = [110, 110, 130.81, 146.83, 164.81, 146.83, 130.81, 110];
+    for (let i = 0; i < 24; i++) {
+      const t = now + i * 0.22;
+      const osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.type = "sawtooth"; osc.frequency.setValueAtTime(bass[i % bass.length], t);
+      g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.14, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.19);
+      osc.connect(g); g.connect(ctx.destination); osc.start(t); osc.stop(t + 0.2);
+    }
+    // Iconic ascending fanfare + RAJNI slam chord (5.3s - 7.5s)
+    const fanfare = [[220, 5.3, 0.18], [277.18, 5.5, 0.18], [329.63, 5.7, 0.22], [440, 5.95, 1.4]];
+    fanfare.forEach(([f, s, d]) => {
+      const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain();
+      o1.type = "sawtooth"; o1.frequency.setValueAtTime(f, now + s);
+      o2.type = "square"; o2.frequency.setValueAtTime(f * 1.5, now + s);
+      g.gain.setValueAtTime(0.001, now + s); g.gain.linearRampToValueAtTime(0.22, now + s + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, now + s + d);
+      o1.connect(g); o2.connect(g); g.connect(ctx.destination);
+      o1.start(now + s); o2.start(now + s); o1.stop(now + s + d); o2.stop(now + s + d);
+    });
+  } catch (_) {}
+}
+
+function runRajniAnimation(withAudio, autoClose) {
+  if (rajniRaf) cancelAnimationFrame(rajniRaf);
+  if (withAudio) playClassicRajniMusic();
+  const c = document.getElementById("rajniCanvas"), ctx = c.getContext("2d");
+  const start = performance.now();
+  function drawDot(x, y) {
+    const grd = ctx.createRadialGradient(x, y, 1, x, y, 8);
+    grd.addColorStop(0, "#93c5fd"); grd.addColorStop(0.5, "#2563eb"); grd.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill();
+  }
+  function frame(now) {
+    const sec = (now - start) / 1000;
+    ctx.fillStyle = "#000"; ctx.fillRect(0, 0, 720, 400);
+
+    // 0s - 2.6s: SUPER lights up dot by dot
+    const superCount = Math.min(SUPER_DOTS.length, Math.floor((sec / 2.6) * SUPER_DOTS.length));
+    for (let i = 0; i < superCount; i++) drawDot(SUPER_DOTS[i].x, SUPER_DOTS[i].y);
+
+    // 2.6s - 4.8s: STAR lights up dot by dot
+    if (sec > 2.6) {
+      const starCount = Math.min(STAR_DOTS.length, Math.floor(((sec - 2.6) / 2.2) * STAR_DOTS.length));
+      for (let i = 0; i < starCount; i++) drawDot(STAR_DOTS[i].x, STAR_DOTS[i].y);
+    }
+
+    // 4.8s - 6.0s: Spinning red & yellow emblem in center
+    if (sec >= 4.8 && sec < 6.0) {
+      const p = (sec - 4.8) / 1.2;
+      ctx.save(); ctx.translate(360, 200); ctx.rotate(p * Math.PI * 4); ctx.scale(0.4 + p * 1.1, 0.4 + p * 1.1);
+      ctx.fillStyle = "#dc2626"; ctx.fillRect(-36, -16, 72, 32);
+      ctx.fillStyle = "#facc15"; ctx.beginPath(); ctx.moveTo(0, -34); ctx.lineTo(26, 22); ctx.lineTo(-26, 22); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    // 6.0s+: RAJNI slams in bright yellow with cyan/white neon glow
+    if (sec >= 6.0) {
+      const glow = Math.min(1, (sec - 6.0) / 0.5);
+      ctx.save();
+      ctx.font = "900 82px Impact, Orbitron, sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.shadowColor = "#00f0ff"; ctx.shadowBlur = 28 * glow;
+      ctx.fillStyle = "#e0f2fe"; ctx.fillText("RAJNI", 360, 200);
+      ctx.shadowColor = "#67e8f9"; ctx.shadowBlur = 14;
+      ctx.fillStyle = "#facc15"; ctx.fillText("RAJNI", 360, 200);
+      ctx.restore();
+    }
+
+    if (sec < 8.2) { rajniRaf = requestAnimationFrame(frame); }
+    else if (autoClose) { rajniIntro.classList.add("hide"); }
+  }
+  rajniRaf = requestAnimationFrame(frame);
+}
+
+const rajniIntro = document.getElementById("rajniIntro");
+runRajniAnimation(false, false);
+document.getElementById("enterSoundBtn").addEventListener("click", () => {
+  runRajniAnimation(true, true);
+});
+document.getElementById("skipIntroBtn").addEventListener("click", () => {
+  if (rajniRaf) cancelAnimationFrame(rajniRaf);
+  rajniIntro.classList.add("hide");
+});
+document.getElementById("replayIntroBtn").addEventListener("click", () => {
+  rajniIntro.classList.remove("hide");
+  runRajniAnimation(true, true);
+});
+</script>
+</body>
+</html>
