@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta name="google-site-verification" content="ACcyUAC5_c9M4XqeuajgJMcTNnzYITcIV_QeyqXpGiQ" />
@@ -8,16 +8,136 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #050814;
-      --panel: rgba(13, 19, 38, 0.84);
-      --panel2: rgba(9, 13, 28, 0.92);
-      --cyan: #00f0ff;
-      --violet: #8b5cf6;
-      --pink: #ec4899;
-      --text: #e2e8f0;
+      --bg: #090A0F;
+      --panel: rgba(10, 14, 26, 0.88);
+      --panel2: rgba(6, 9, 18, 0.95);
+      --cyan: #FFD700;
+      --gold: #FFD700;
+      --gold2: #FF6B00;
+      --violet: #FF6B00;
+      --text: #f1f5f9;
       --muted: #94a3b8;
-      --border: rgba(0, 240, 255, 0.22);
+      --border: rgba(245, 158, 11, 0.42);
     }
+    #bgFx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+    body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9000; opacity: 0.22;
+      background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.3) 50%);
+      background-size: 100% 4px;
+    }
+
+    .studio-hub-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px; margin: 14px auto 28px; max-width: 1120px;
+    }
+    .studio-card {
+      position: relative; background: rgba(12, 14, 22, 0.86); backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 215, 0, 0.25); border-radius: 14px; padding: 16px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
+      overflow: hidden; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .studio-card::before {
+      content: ""; position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.16), transparent);
+      transform: skewX(-25deg); transition: left 0.6s ease; pointer-events: none;
+    }
+    .studio-card:hover {
+      transform: translateY(-4px); border-color: rgba(255, 215, 0, 0.85);
+      box-shadow: 0 12px 30px rgba(255, 107, 0, 0.2), 0 0 16px rgba(255, 215, 0, 0.14);
+    }
+    .studio-card:hover::before { left: 160%; }
+    .sc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .sc-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.22), rgba(255, 107, 0, 0.18));
+      border: 1px solid rgba(255, 215, 0, 0.4); display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .sc-badge {
+      padding: 4px 8px; border-radius: 7px; background: rgba(9, 10, 15, 0.9);
+      border: 1px solid rgba(255, 215, 0, 0.25); font-family: 'Orbitron', sans-serif;
+      font-size: 9px; letter-spacing: 0.8px; color: #FF6B00; text-transform: uppercase;
+    }
+    .sc-title { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; color: #fff; margin: 6px 0 4px; }
+    .sc-desc { font-size: 12px; color: #94a3b8; line-height: 1.45; margin: 0; }
+    .sc-launch {
+      width: 100%; padding: 9px 12px; border-radius: 10px;
+      background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.4);
+      color: #FFD700; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px;
+      letter-spacing: 1px; cursor: pointer; transition: 0.2s; text-transform: uppercase;
+    }
+    .sc-launch:hover { background: linear-gradient(135deg, #FFD700, #FF6B00); color: #090A0F; border-color: transparent; }
+    .back-hub-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 215, 0, 0.22);
+    }
+    .back-hub-btn {
+      padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255, 215, 0, 0.45);
+      background: rgba(255, 215, 0, 0.1); color: #FFD700; font-family: 'Orbitron', sans-serif;
+      font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .back-hub-btn:hover { background: linear-gradient(135deg, #FFD700, #FF6B00); color: #090A0F; border-color: transparent; }
+    .layout.hub-mode { display: none; }
+    .hub-browser.hidden { display: none; }
+
+    .hud-search-wrap {
+      max-width: 920px; margin: 0 auto 14px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .hud-search-input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.45); background: rgba(12, 14, 22, 0.9);
+      color: #fff; font-family: inherit; font-size: 14px; outline: none;
+      box-shadow: 0 0 18px rgba(255, 107, 0, 0.12);
+    }
+    .hud-search-input:focus { border-color: #FFD700; box-shadow: 0 0 22px rgba(255, 215, 0, 0.28); }
+    .quick-pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .quick-pill {
+      padding: 7px 13px; border-radius: 10px; border: 1px solid rgba(255, 215, 0, 0.35);
+      background: rgba(12, 14, 22, 0.85); color: #fde68a; font-family: 'Orbitron', sans-serif;
+      font-size: 11px; letter-spacing: 0.8px; cursor: pointer; transition: 0.2s;
+    }
+    .quick-pill:hover, .quick-pill.active {
+      background: linear-gradient(135deg, #FFD700, #FF6B00); color: #090A0F; font-weight: 800; border-color: transparent;
+    }
+
+    .hud-top {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 10px 20px; margin: 0 auto 18px; max-width: 1140px;
+      background: linear-gradient(90deg, rgba(15,23,42,0.92), rgba(30,20,10,0.9), rgba(15,23,42,0.92));
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0 50%);
+    }
+    .hud-brand { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 2px; color: var(--gold2); text-shadow: 0 0 12px rgba(245,158,11,0.5); }
+    .hud-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hud-pill {
+      padding: 7px 14px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fde68a; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px; cursor: pointer;
+      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); transition: 0.2s;
+    }
+    .hud-pill:hover, .hud-pill.active { background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #050814; font-weight: 800; }
+    .hud-user {
+      padding: 7px 16px; background: rgba(0, 240, 255, 0.12); border: 1px solid var(--cyan);
+      color: var(--cyan); font-family: 'Orbitron', sans-serif; font-size: 11px; cursor: pointer;
+      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    }
+    .bevel-card {
+      background: var(--panel); backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.75), inset 0 0 24px rgba(245, 158, 11, 0.06);
+      clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
+    }
+    .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
+    .asset-item {
+      background: var(--panel2); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 12px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .asset-item img, .asset-item video { width: 100%; height: 150px; object-fit: cover; border-radius: 6px; display: block; margin: 0; }
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.78); backdrop-filter: blur(8px);
+      z-index: 9500; display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal-box { max-width: 400px; width: 100%; padding: 24px; }
     * { box-sizing: border-box; }
     body {
       margin: 0; min-height: 100vh; font-family: 'Space Grotesk', sans-serif; color: var(--text); background: var(--bg);
@@ -73,8 +193,9 @@
       border-color: var(--cyan); color: #fff; box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
     }
     .main {
-      background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border);
-      border-radius: 16px; padding: 22px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55); min-height: 520px;
+      background: var(--panel); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.45);
+      padding: 26px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 24px rgba(245,158,11,0.05); min-height: 520px;
+      clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
     }
     .card { display: none; }
     .card.active { display: block; animation: fade 0.2s ease; }
@@ -202,6 +323,17 @@
       <button class="sec-btn" id="skipIntroBtn">Skip Intro</button>
     </div>
   </div>
+  <canvas id="bgFx"></canvas>
+  <div class="hud-top">
+    <div class="hud-brand">⚡ THALAIVAR AI</div>
+    <div class="hud-links">
+      <button class="hud-pill active" id="hudStudioBtn">STUDIO</button>
+      <button class="hud-pill" id="hudAssetsBtn">ASSETS (<span id="assetCount">0</span>)</button>
+      <button class="hud-pill" id="hudPlayBtn">🎧 PLAYLISTS WHILE WORKING</button>
+      <button class="hud-pill" id="hudIntroBtn">🎬 INTRO</button>
+    </div>
+    <button class="hud-user" id="authBtn">SIGN IN</button>
+  </div>
   <div class="wrap">
     <header>
       <div class="badge">Zero Paywalls // 24-in-1 Neural &amp; Creator Suite</div>
@@ -210,10 +342,26 @@
       <button class="sec-btn" id="replayIntroBtn" style="margin-top:10px;">🎬 Replay Superstar Intro</button>
     </header>
 
+    <div class="hud-search-wrap">
+      <input id="toolQuickSearch" class="hud-search-input" type="text" placeholder="🔍 Search any AI Engine (e.g. Video, SDXL, Python, Logo, Notes, Music)..." />
+      <div id="quickToolResults" class="quick-pills"></div>
+    </div>
     <div class="menu-bar">
       <button class="menu-toggle" id="menuToggleBtn">☰ ALL TOOLS (24) — <span id="activeToolLabel">Text → Image</span></button>
     </div>
-    <div class="layout">
+    <div id="hubBrowser" class="hub-browser">
+      <div id="hubCategoryPills" class="quick-pills" style="margin-bottom:14px;">
+        <button type="button" class="quick-pill active" data-hub-cat="All">All Engines</button>
+        <button type="button" class="quick-pill" data-hub-cat="Media Studio">🎬 Media Studio</button>
+        <button type="button" class="quick-pill" data-hub-cat="Editors &amp; Canvas">✂️ Editors &amp; Canvas</button>
+        <button type="button" class="quick-pill" data-hub-cat="Design &amp; Web">🎨 Design &amp; Web</button>
+        <button type="button" class="quick-pill" data-hub-cat="Audio &amp; Voice">🎧 Audio &amp; Voice</button>
+        <button type="button" class="quick-pill" data-hub-cat="Chat, Docs &amp; Writing">✍️ Chat &amp; Docs</button>
+        <button type="button" class="quick-pill" data-hub-cat="Student Suite">🎓 Student Suite</button>
+      </div>
+      <div id="hubCardsGrid" class="studio-hub-grid"></div>
+    </div>
+    <div class="layout hub-mode" id="toolWorkspaceLayout">
       <aside class="sidebar" id="sidebar">
         <div class="cat-group expanded">
           <button class="cat-title" type="button">Media Studio <span>▾</span></button>
@@ -249,6 +397,7 @@
             <button class="nav-btn" data-tab="musicGen">AI Music Generator</button>
             <button class="nav-btn" data-tab="tts">AI Text to Speech</button>
             <button class="nav-btn" data-tab="dictator">AI Dictator (STT)</button>
+            <button class="nav-btn" data-tab="workPlaylist">Playlists While Working</button>
           </div>
         </div>
         <div class="cat-group">
@@ -267,17 +416,31 @@
             <button class="nav-btn" data-tab="mindmapGen">MindMap Generator</button>
             <button class="nav-btn" data-tab="flashGen">Flashcard Generator</button>
             <button class="nav-btn" data-tab="timetableGen">Timetable Generator</button>
+            <button class="nav-btn" data-tab="assetsVault">Saved Assets Vault</button>
           </div>
         </div>
       </aside>
 
       <main class="main">
+        <div class="back-hub-bar">
+          <button type="button" id="backToHubBtn" class="back-hub-btn">← All 25 Engines</button>
+          <span id="wsActiveBadge" class="sc-badge">ENGINE ACTIVE</span>
+        </div>
         <!-- 1. Text to Image -->
         <section id="t2i" class="card active">
           <h2 class="tool-head">Text → Image</h2>
           <p class="tool-desc">Generate free AI artwork using community AI Horde workers.</p>
           <label>Image Prompt</label>
           <input id="t2iPrompt" type="text" placeholder="e.g. Cyberpunk sports car under neon rain, ultra detailed" />
+          <label>AI Model (Higher Clarity)</label>
+          <select id="t2iModel">
+            <option value="pollinations:flux">⚡ Pollinations Flux (Fast • No Kudos Limit)</option>
+            <option value="pollinations:turbo">🚀 Pollinations Turbo (Ultra Fast • No Kudos)</option>
+            <option value="AlbedoBase XL (SDXL)">AlbedoBase XL (AI Horde SDXL — Best Realism)</option>
+            <option value="Deliberate">Deliberate (AI Horde — Photoreal &amp; Portraits)</option>
+            <option value="DreamShaper">DreamShaper (AI Horde — Stylized / 3D / Anime)</option>
+            <option value="">Auto (Pollinations → AI Horde Fallback)</option>
+          </select>
           <label>Visual Style</label>
           <select id="t2iStyle">            <option value="">Default (No Style)</option>
             <option value=", 3D modelling, Blender 3D render, Pixar style, octane render">3D Modelling</option>
@@ -301,6 +464,13 @@
           <input id="i2iFile" type="file" accept="image/*" multiple />
           <label>Transformation Prompt</label>
           <input id="i2iPrompt" type="text" placeholder="e.g. Turn into anime style with glowing blue aura" />
+          <label>AI Model (Higher Clarity)</label>
+          <select id="i2iModel">
+            <option value="AlbedoBase XL (SDXL)">AlbedoBase XL (SDXL — Best Realism & Cars)</option>
+            <option value="Deliberate">Deliberate (Sharp Photoreal & Portraits)</option>
+            <option value="DreamShaper">DreamShaper (Stylized / 3D / Anime)</option>
+            <option value="">Auto (Fastest Available Worker)</option>
+          </select>
           <label>Visual Style</label>
           <select id="i2iStyle">            <option value="">Default (No Style)</option>
             <option value=", 3D modelling, Blender 3D render, Pixar style, octane render">3D Modelling</option>
@@ -326,6 +496,15 @@
           <input id="t2vPrompt" type="text" placeholder="e.g. Futuristic spaceship flying past Saturn rings" />
           <label>Motion / Camera Prompt</label>
           <input id="t2vMotion" type="text" placeholder="e.g. cinematic zoom in, pan left, pulse, fast" />
+          <label>AI Model (Higher Clarity)</label>
+          <select id="t2vModel">
+            <option value="pollinations:flux">⚡ Pollinations Flux (Fast • No Kudos Limit)</option>
+            <option value="pollinations:turbo">🚀 Pollinations Turbo (Ultra Fast • No Kudos)</option>
+            <option value="AlbedoBase XL (SDXL)">AlbedoBase XL (AI Horde SDXL — Best Realism)</option>
+            <option value="Deliberate">Deliberate (AI Horde — Sharp Photoreal)</option>
+            <option value="DreamShaper">DreamShaper (AI Horde — Stylized / 3D / Anime)</option>
+            <option value="">Auto (Pollinations → AI Horde Fallback)</option>
+          </select>
           <label>Visual Style</label>
           <select id="t2vStyle">            <option value="">Default (No Style)</option>
             <option value=", 3D modelling, Blender 3D render, Pixar style, octane render">3D Modelling</option>
@@ -369,6 +548,11 @@
             <option value="pan_left">Pan Left</option>
             <option value="pan_right">Pan Right</option>
             <option value="pulse">Energy Pulse + Zoom</option>
+          </select>
+          <label>Render Quality / FPS</label>
+          <select id="i2vQuality">
+            <option value="30">30 FPS HD (512×512 • Fast)</option>
+            <option value="60">60 FPS Ultra (720×720 • Smooth)</option>
           </select>
           <label>Duration: <span id="i2vSecVal">10</span>s (Max 120s)</label>
           <input id="i2vSec" type="range" min="1" max="120" step="1" value="10" />
@@ -657,6 +841,11 @@
             <option value="lego">LEGO / Blocks Mosaic</option>
             <option value="cyber">Cyberpunk Neon</option>
           </select>
+          <label>Render Quality / FPS</label>
+          <select id="v2vQuality">
+            <option value="30">30 FPS HD (Fast)</option>
+            <option value="60">60 FPS Ultra (Smooth)</option>
+          </select>
           <div class="btn-row"><button class="go" id="v2vBtn">TRANSFORM VIDEO</button></div>
           <div id="v2vStatus" class="status"></div>
           <video id="v2vOut" class="preview-vid" controls></video>
@@ -761,7 +950,62 @@
           </div>
           <div id="hmOut" class="out-box"></div>
         </section>
+
+        <!-- 25. Assets Vault -->
+        <section id="assetsVault" class="card">
+          <h2 class="tool-head">SAVED ASSETS VAULT</h2>
+          <p class="tool-desc">All your generated images, videos, tracks, documents, and notes saved to your account. Download or copy any asset anytime.</p>
+          <div class="btn-row">
+            <button class="sec-btn" id="clearAssetsBtn">Clear My Assets</button>
+          </div>
+          <div id="assetsGrid" class="asset-grid"></div>
+        </section>
+
+        <!-- 26. Playlists While Working (Anirudh x Rajni) -->
+        <section id="workPlaylist" class="card">
+          <h2 class="tool-head">🎧 PLAYLISTS WHILE WORKING — ANIRUDH × RAJNI</h2>
+          <p class="tool-desc">Click <strong>▶ Play In-App</strong> on any track to play it right here inside Thalaivar AI while you work—no redirecting away! Or load your own local MP3s below.</p>
+          <div id="inAppPlayerWrap" style="margin-bottom:16px;background:var(--panel2);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:12px;">
+            <div id="nowPlaying" style="font-family:Orbitron,sans-serif;font-size:12px;color:var(--gold2);margin-bottom:8px;">NOW PLAYING: Select any track below</div>
+            <iframe id="ytPlayer" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;height:260px;border:none;border-radius:8px;display:none;" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+            <div id="ytMiniNote" style="display:none;margin-top:8px;font-size:12px;color:var(--muted);">
+              If preview blocks YouTube (Error 153 in sandbox), it works on your live Netlify domain — or <button id="ytPopupBtn" class="sec-btn" style="padding:4px 10px;font-size:11px;margin-left:6px;">🪟 Open Mini-Player</button>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-bottom:14px;">
+            <button class="go" id="wpThemePlay">▶ PLAY SUPERSTAR TITLE THEME</button>
+            <button class="sec-btn" id="wpThemeStop">⏹ Stop Theme</button>
+          </div>
+          <label>Or Play Your Own Local MP3 / Audio Files</label>
+          <input id="localMp3Input" type="file" accept="audio/*" multiple />
+          <audio id="localMp3Player" controls style="width:100%;margin-top:8px;display:none;"></audio>
+          <label>Filter by Movie</label>
+          <select id="wpFilter">
+            <option value="all">All Movies (Petta → Jailer 2)</option>
+            <option value="Jailer 2">Jailer 2 (2026)</option>
+            <option value="Coolie">Coolie (2025)</option>
+            <option value="Vettaiyan">Vettaiyan (2024)</option>
+            <option value="Jailer">Jailer (2023)</option>
+            <option value="Darbar">Darbar (2020)</option>
+            <option value="Petta">Petta (2019)</option>
+          </select>
+          <div id="wpList" class="asset-grid"></div>
+        </section>
       </main>
+    </div>
+  </div>
+  <div id="authModal" class="modal-bg">
+    <div class="modal-box bevel-card">
+      <h2 class="tool-head" style="color:var(--gold2);">COMMANDER SIGN IN</h2>
+      <p class="tool-desc">Sign in to save your generated creations in the ASSETS tab.</p>
+      <label>Your Name</label>
+      <input id="authName" type="text" placeholder="e.g. Rithul" />
+      <label>Email or Handle</label>
+      <input id="authEmail" type="text" placeholder="e.g. rithul@thalaivar.ai" />
+      <div class="btn-row">
+        <button class="go" id="authSaveBtn">ENTER AS COMMANDER</button>
+        <button class="sec-btn" id="authCancelBtn" style="display:none;">Close</button>
+      </div>
     </div>
   </div>
   <div id="toast" class="toast"></div>
@@ -823,9 +1067,19 @@ function showMedia(el, dlEl, src) {
 
 async function hordeImage(payload, statusEl) {
   statusEl.textContent = "Dispatching to free AI Horde workers (~20-50s)...";
-  const res = await fetch(`${HORDE_IMG}/generate/async`, { method: "POST", headers: HORDE_HEADERS, body: JSON.stringify(payload) });
+  const res = await fetch(`${HORDE_IMG}/generate/async`, { method: "POST", headers: HORDE_HEADERS, body: JSON.stringify((({ _retried, ...rest }) => rest)(payload)) });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Request failed");
+  if (!res.ok) {
+    if ((data.message || "").toLowerCase().includes("kudos") && (!payload._retried)) {
+      statusEl.textContent = "High demand — auto-switching to 512×512 free tier...";
+      const retryPayload = JSON.parse(JSON.stringify(payload));
+      retryPayload._retried = true;
+      retryPayload.params = { ...(retryPayload.params || {}), width: 512, height: 512, steps: 20 };
+      delete retryPayload.models;
+      return await hordeImage(retryPayload, statusEl);
+    }
+    throw new Error(data.message || "Request failed");
+  }
   for (let i = 0; i < 60; i++) {
     await new Promise(r => setTimeout(r, 3000));
     const chk = await (await fetch(`${HORDE_IMG}/generate/check/${data.id}`)).json();
@@ -855,13 +1109,57 @@ async function fileToWebpB64(file) {
 }
 
 // 1. Text to Image
+async function pollinationsImage(promptText, modelName, statusEl) {
+  const mdl = modelName || "flux";
+  statusEl.textContent = `Generating on Pollinations (${mdl}) free worker...`;
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?model=${encodeURIComponent(mdl)}&width=768&height=768&nologo=true&seed=${Math.floor(Math.random()*999999)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Pollinations worker busy");
+  const blob = await res.blob();
+  statusEl.textContent = "Done!";
+  return URL.createObjectURL(blob);
+}
+
+async function smartGenerateImage(promptText, modelVal, hordePayload, statusEl) {
+  if (modelVal && modelVal.startsWith("pollinations:")) {
+    const pMdl = modelVal.split(":")[1];
+    try {
+      return await pollinationsImage(promptText, pMdl, statusEl);
+    } catch (e) {
+      statusEl.textContent = "Pollinations busy — switching to AI Horde workers...";
+      return await hordeImage(hordePayload, statusEl);
+    }
+  }
+  if (!modelVal) {
+    try {
+      return await pollinationsImage(promptText, "flux", statusEl);
+    } catch (e) {
+      statusEl.textContent = "Switching to AI Horde community workers...";
+      return await hordeImage(hordePayload, statusEl);
+    }
+  }
+  try {
+    hordePayload.models = [modelVal];
+    return await hordeImage(hordePayload, statusEl);
+  } catch (e) {
+    statusEl.textContent = "AI Horde busy — auto-switching to Pollinations Flux...";
+    return await pollinationsImage(promptText, "flux", statusEl);
+  }
+}
+
 document.getElementById("t2iBtn").addEventListener("click", async () => {
   const p = document.getElementById("t2iPrompt").value.trim();
   if (!p) return toast("Enter a prompt first!");
   try {
     const st = document.getElementById("t2iStyle").value;
-    const url = await hordeImage({ prompt: p + st, params: { width: 512, height: 512, steps: 20, n: 1 } }, document.getElementById("t2iStatus"));
+    const mdl = document.getElementById("t2iModel").value;
+    const payload = {
+      prompt: p + st + ", masterpiece, ultra sharp, 8k, high clarity, proper anatomy, clean separation ### blurry, lowres, distorted, mutated, merged, fused body, broken car, deformed, extra limbs, watermark",
+      params: { width: 576, height: 576, steps: 24, n: 1, cfg_scale: 7.5 }
+    };
+    const url = await smartGenerateImage(p + st, mdl, payload, document.getElementById("t2iStatus"));
     showMedia(document.getElementById("t2iOut"), document.getElementById("t2iDl"), url);
+    saveAsset("image", p, url);
   } catch (e) { document.getElementById("t2iStatus").textContent = "Error: " + e.message; }
 });
 
@@ -886,10 +1184,14 @@ document.getElementById("i2iBtn").addEventListener("click", async () => {
   if (!p) return toast("Enter a transformation prompt!");
   try {
     const b64 = await filesToBlendedWebpB64(files);
-    const url = await hordeImage({
-      prompt: p + document.getElementById("i2iStyle").value, source_image: b64, source_processing: "img2img",
-      params: { width: 512, height: 512, steps: 20, n: 1, denoising_strength: parseFloat(document.getElementById("i2iStr").value) }
-    }, document.getElementById("i2iStatus"));
+    const mdl = document.getElementById("i2iModel").value;
+    const payload = {
+      prompt: p + document.getElementById("i2iStyle").value + ", masterpiece, ultra sharp, 8k, high clarity ### blurry, lowres, distorted, deformed, watermark",
+      source_image: b64, source_processing: "img2img",
+      params: { width: 512, height: 512, steps: 22, n: 1, denoising_strength: parseFloat(document.getElementById("i2iStr").value) }
+    };
+    if (mdl) payload.models = [mdl];
+    const url = await hordeImage(payload, document.getElementById("i2iStatus"));
     showMedia(document.getElementById("i2iOut"), document.getElementById("i2iDl"), url);
   } catch (e) { document.getElementById("i2iStatus").textContent = "Error: " + e.message; }
 });
@@ -937,7 +1239,7 @@ async function animateImg(srcUrl, seconds, motionPrompt, preset, videoEl, dlEl, 
   const base = document.createElement("canvas"); base.width = 512; base.height = 512;
   base.getContext("2d").drawImage(img, 0, 0, 512, 512);
 
-  const rec = new MediaRecorder(c.captureStream(25));
+  const rec = new MediaRecorder(c.captureStream(window._vidFps || 30));
   const chunks = [];
   rec.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
   rec.onstop = () => {
@@ -976,7 +1278,12 @@ document.getElementById("t2vBtn").addEventListener("click", async () => {
   if (!p) return toast("Enter a scene prompt!");
   try {
     const st = document.getElementById("t2vStyle").value;
-    const url = await hordeImage({ prompt: p + st, params: { width: 512, height: 512, steps: 20, n: 1 } }, document.getElementById("t2vStatus"));
+    const mdl = document.getElementById("t2vModel").value;
+    const payload = {
+      prompt: p + st + ", masterpiece, ultra sharp, 8k, high clarity, accurate anatomy, clean composition, cinematic lighting ### blurry, lowres, distorted, deformed, fused, extra limbs, bad anatomy, watermark, text",
+      params: { width: 576, height: 576, steps: 24, n: 1, cfg_scale: 7.5 }
+    };
+    const url = await smartGenerateImage(p + st, mdl, payload, document.getElementById("t2vStatus"));
     await animateImg(url, parseInt(document.getElementById("t2vSec").value), document.getElementById("t2vMotion").value, "auto",
       document.getElementById("t2vOut"), document.getElementById("t2vDl"), document.getElementById("t2vStatus"),
       document.getElementById("t2vProgWrap"), document.getElementById("t2vProg"));
@@ -997,7 +1304,7 @@ async function animateMultiImgs(files, seconds, motionPrompt, preset, visStyle, 
     const b = document.createElement("canvas"); b.width = 512; b.height = 512;
     b.getContext("2d").drawImage(im, 0, 0, 512, 512); return b;
   });
-  const rec = new MediaRecorder(c.captureStream(25));
+  const rec = new MediaRecorder(c.captureStream(window._vidFps || 30));
   const chunks = [];
   rec.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
   rec.onstop = () => {
@@ -1029,6 +1336,7 @@ async function animateMultiImgs(files, seconds, motionPrompt, preset, visStyle, 
 }
 
 document.getElementById("i2vBtn").addEventListener("click", async () => {
+  window._vidFps = parseInt(document.getElementById("i2vQuality").value) || 30;
   const files = document.getElementById("i2vFile").files;
   if (!files || !files.length) return toast("Upload at least 1 image first!");
   await animateMultiImgs(files, parseInt(document.getElementById("i2vSec").value),
@@ -1309,6 +1617,7 @@ document.getElementById("docBtn").addEventListener("click", async () => {
   const doc = ai || `# ${topic}\n**Format:** ${type} | **Tone:** ${tone}\n\n## 1. Introduction\n${topic} plays a major role in modern innovation and daily life.\n\n## 2. Core Analysis\n- Key drivers and real-world impact of ${topic}\n- Current challenges and practical solutions\n- Future outlook and next steps\n\n## 3. Conclusion\nUnderstanding ${topic} equips learners and creators to build smarter solutions.`;
   out.textContent = doc;
   dl.href = URL.createObjectURL(new Blob([doc], { type: "text/markdown" })); dl.classList.add("show");
+  saveAsset("text", topic, doc);
 });
 document.getElementById("docPrintBtn").addEventListener("click", () => window.print());
 
@@ -1346,10 +1655,11 @@ document.getElementById("ntBtn").addEventListener("click", async () => {
   if (!top) return toast("Enter a chapter or topic!");
   const out = document.getElementById("ntOut"), dl = document.getElementById("ntDl");
   out.classList.add("show"); out.textContent = "Generating high-class study notes...";
-  const ai = await hordeText(`Create concise, exam-ready ${sub} study notes on "${top}" with Key Definitions, Core Concepts, Formulas/Examples, and 3 Quick Quiz Questions.`);
+  const ai = await hordeText(`Act like NotebookLM Study Guide. Create structured ${sub} notes on "${top}" with: 1) Executive Summary, 2) Core Concepts & Definitions, 3) Real-World Analogy, 4) 3 Flashcard Q&As, 5) Self-Test Quiz.`);
   const notes = ai || `# ${sub}: ${top}\n\n## Key Definitions\n- **${top}:** Core principle explaining how this concept behaves in ${sub}.\n\n## High-Yield Concepts\n1. Understand the cause-and-effect relationship.\n2. Memorize key units, dates, or syntax.\n3. Practice applying it to real problems.\n\n## Quick Self-Test\n1. Define ${top} in one sentence.\n2. Give one real-world example of ${top}.\n3. What happens if key conditions change?`;
   out.textContent = notes;
   dl.href = URL.createObjectURL(new Blob([notes], { type: "text/markdown" })); dl.classList.add("show");
+  saveAsset("text", `${sub}: ${top}`, notes);
 });
 document.getElementById("ntPrintBtn").addEventListener("click", () => window.print());
 
@@ -1423,6 +1733,7 @@ document.getElementById("ttPrintBtn").addEventListener("click", () => window.pri
 
 // 19. Video to Video
 document.getElementById("v2vBtn").addEventListener("click", () => {
+  window._vidFps = parseInt(document.getElementById("v2vQuality").value) || 30;
   const f = document.getElementById("v2vFile").files[0];
   if (!f) return toast("Upload a video first!");
   const st = document.getElementById("v2vStyle").value;
@@ -1532,7 +1843,7 @@ document.getElementById("lgSvgBtn").addEventListener("click", () => {
 document.getElementById("lgAiBtn").addEventListener("click", async () => {
   const name = document.getElementById("lgName").value.trim() || "THALAIVAR AI";
   try {
-    const url = await hordeImage({ prompt: `Minimalist 3D futuristic neon vector logo emblem for ${name}, dark background, sharp glowing edges`, params: { width: 512, height: 512, steps: 20, n: 1 } }, document.getElementById("lgStatus"));
+    const url = await hordeImage({ prompt: `Minimalist 3D futuristic neon vector logo emblem for ${name}, dark background, sharp glowing edges`, params: { width: 768, height: 768, steps: 30, n: 1, cfg_scale: 7.5 } }, document.getElementById("lgStatus"));
     const dl = document.getElementById("lgDl"); dl.download = "thalaivar-ai-logo.png";
     showMedia(document.getElementById("lgOut"), dl, url);
   } catch (e) { document.getElementById("lgStatus").textContent = "Error: " + e.message; }
@@ -1578,6 +1889,189 @@ document.getElementById("hmCopyBtn").addEventListener("click", () => {
   navigator.clipboard?.writeText(txt).catch(() => {});
   toast("Humanized text copied!");
 });
+
+
+// Animated 3D Starfield / Golden Ember Background
+(function initBgFx() {
+  const c = document.getElementById("bgFx"), ctx = c.getContext("2d");
+  let w, h;
+  const pts = Array.from({ length: 70 }, () => ({
+    x: Math.random(), y: Math.random(), r: Math.random() * 2 + 0.5,
+    vx: (Math.random() - 0.5) * 0.0004, vy: -Math.random() * 0.0006 - 0.0002,
+    col: Math.random() > 0.45 ? "rgba(245,158,11,0.55)" : "rgba(0,240,255,0.45)"
+  }));
+  function resize() { w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+  resize(); window.addEventListener("resize", resize);
+  function loop() {
+    ctx.clearRect(0, 0, w, h);
+    pts.forEach(p => {
+      p.x = (p.x + p.vx + 1) % 1; p.y = (p.y + p.vy + 1) % 1;
+      ctx.fillStyle = p.col; ctx.beginPath(); ctx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// Auth & Saved Assets Vault
+let currentUser = null;
+try { currentUser = JSON.parse(localStorage.getItem("thalaivar_user") || "null"); } catch (_) {}
+function getAssetsKey() { return "thalaivar_assets_" + (currentUser ? currentUser.name.toLowerCase() : "guest"); }
+function loadAssets() {
+  try { return JSON.parse(localStorage.getItem(getAssetsKey()) || "[]"); } catch (_) { return []; }
+}
+function saveAsset(type, title, content) {
+  if (!currentUser) {
+    toast("Sign in (top right) to save assets to your account!");
+  }
+  const list = loadAssets();
+  list.unshift({ id: Date.now(), type, title: title.slice(0, 50), content, time: new Date().toLocaleTimeString() });
+  try { localStorage.setItem(getAssetsKey(), JSON.stringify(list.slice(0, 24))); } catch (_) {}
+  renderAssets();
+}
+function renderAssets() {
+  const list = loadAssets();
+  document.getElementById("assetCount").textContent = list.length;
+  const grid = document.getElementById("assetsGrid");
+  if (!list.length) {
+    grid.innerHTML = `<div style="color:var(--muted);padding:20px;">No saved assets yet for ${currentUser ? currentUser.name : "Guest"}. Generate an image, video, note, or doc to see it here!</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(item => {
+    let media = `<div style="font-size:12px;color:#cbd5e1;max-height:110px;overflow:hidden;">${String(item.content).slice(0, 160).replace(/</g, "&lt;")}</div>`;
+    if (item.type === "image") media = `<img src="${item.content}" alt="asset" />`;
+    else if (item.type === "video") media = `<video src="${item.content}" controls></video>`;
+    return `<div class="asset-item">
+      <div style="font-family:Orbitron,sans-serif;font-size:11px;color:var(--gold2);">${item.type.toUpperCase()} • ${item.time}</div>
+      <div style="font-size:13px;font-weight:600;">${item.title.replace(/</g, "&lt;")}</div>
+      ${media}
+      <div class="btn-row" style="margin-top:4px;">
+        <a class="sec-btn" style="text-decoration:none;text-align:center;flex:1;" href="${item.type === 'text' ? URL.createObjectURL(new Blob([item.content], {type:'text/plain'})) : item.content}" download="thalaivar-${item.id}.${item.type==='image'?'png':item.type==='video'?'webm':'txt'}">⬇ Download</a>
+        <button class="sec-btn copy-asset-btn" data-id="${item.id}" style="flex:1;">📋 Copy</button>
+      </div>
+    </div>`;
+  }).join("");
+  document.querySelectorAll(".copy-asset-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      const found = loadAssets().find(x => String(x.id) === b.dataset.id);
+      if (found) { navigator.clipboard?.writeText(found.content).catch(() => {}); toast("Asset copied to clipboard!"); }
+    });
+  });
+}
+
+function updateAuthUI() {
+  const btn = document.getElementById("authBtn");
+  const modal = document.getElementById("authModal");
+  btn.textContent = currentUser ? `⚡ ${currentUser.name.toUpperCase()} (SIGN OUT)` : "SIGN IN";
+  if (!currentUser) { modal.classList.add("show"); }
+  else { modal.classList.remove("show"); }
+  renderAssets();
+}
+updateAuthUI();
+
+document.getElementById("authBtn").addEventListener("click", () => {
+  if (currentUser) {
+    currentUser = null;
+    try { localStorage.removeItem("thalaivar_user"); } catch (_) {}
+    updateAuthUI(); toast("Signed out.");
+  } else {
+    document.getElementById("authModal").classList.add("show");
+  }
+});
+document.getElementById("authCancelBtn").addEventListener("click", () => document.getElementById("authModal").classList.remove("show"));
+document.getElementById("authSaveBtn").addEventListener("click", () => {
+  const name = document.getElementById("authName").value.trim();
+  const email = document.getElementById("authEmail").value.trim();
+  if (!name) return toast("Enter your name!");
+  currentUser = { name, email: email || "commander@thalaivar.ai" };
+  try { localStorage.setItem("thalaivar_user", JSON.stringify(currentUser)); } catch (_) {}
+  document.getElementById("authModal").classList.remove("show");
+  updateAuthUI(); toast(`Welcome, Commander ${name}!`);
+});
+document.getElementById("clearAssetsBtn").addEventListener("click", () => {
+  try { localStorage.removeItem(getAssetsKey()); } catch (_) {}
+  renderAssets(); toast("Assets cleared.");
+});
+document.getElementById("hudAssetsBtn").addEventListener("click", () => {
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+  document.getElementById("assetsVault").classList.add("active");
+  document.getElementById("hudAssetsBtn").classList.add("active");
+  document.getElementById("hudStudioBtn").classList.remove("active");
+});
+document.getElementById("hudStudioBtn").addEventListener("click", () => {
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+  document.getElementById("t2i").classList.add("active");
+  document.getElementById("hudStudioBtn").classList.add("active");
+  document.getElementById("hudAssetsBtn").classList.remove("active");
+});
+document.getElementById("hudIntroBtn").addEventListener("click", () => {
+  document.getElementById("rajniIntro").classList.remove("hide");
+  runRajniAnimation(true, true);
+});
+
+
+// Playlists While Working (Anirudh x Rajni - In-App Player)
+const ANIRUDH_RAJNI = [
+  { movie: "Jailer 2", song: "Hukum Reloaded", yt: "GyaKR1ax_Pw" },
+  { movie: "Jailer 2", song: "Hukum Reloaded Theme", yt: "6pJAxXOJafk" },
+  { movie: "Coolie", song: "Powerhouse", yt: "EBa6OoMxAag" },
+  { movie: "Coolie", song: "Chikitu", yt: "rsJ-LGpE7Lc" },
+  { movie: "Coolie", song: "Monica", yt: "neOasLBWoy0" },
+  { movie: "Vettaiyan", song: "Hunter Vantaar", yt: "Qds5tztmb5g" },
+  { movie: "Vettaiyan", song: "Manasilaayo", yt: "5WsUIeNAtbM" },
+  { movie: "Jailer", song: "Hukum - Thalaivar Alappara", yt: "gB2zKZxESTg" },
+  { movie: "Jailer", song: "Kaavaalaa", yt: "mFcZJNENpKM" },
+  { movie: "Darbar", song: "Chumma Kizhi", yt: "FdVuB1G2G_g" },
+  { movie: "Petta", song: "Marana Mass", yt: "88iypMO9H7g" },
+  { movie: "Petta", song: "Ullaallaa", yt: "oLgzs8nut3A" },
+  { movie: "Petta", song: "Petta Full Jukebox", yt: "_p-gFcfU74M" }
+];
+
+let lastYtId = "";
+function playTrackInApp(ytId, title) {
+  lastYtId = ytId;
+  const frame = document.getElementById("ytPlayer");
+  frame.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`;
+  frame.style.display = "block";
+  document.getElementById("ytMiniNote").style.display = "block";
+  document.getElementById("nowPlaying").textContent = "NOW PLAYING: " + title;
+}
+document.getElementById("ytPopupBtn").addEventListener("click", () => {
+  if (lastYtId) window.open(`https://www.youtube.com/watch?v=${lastYtId}`, "thalaivarMusic", "width=420,height=340");
+});
+
+function renderPlaylist() {
+  const f = document.getElementById("wpFilter").value;
+  const items = f === "all" ? ANIRUDH_RAJNI : ANIRUDH_RAJNI.filter(x => x.movie === f);
+  document.getElementById("wpList").innerHTML = items.map(x => `
+    <div class="asset-item">
+      <div style="font-family:Orbitron,sans-serif;font-size:11px;color:var(--gold2);">${x.movie.toUpperCase()}</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;">${x.song}</div>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="go play-inapp-btn" data-yt="${x.yt}" data-title="${x.song} (${x.movie})" style="padding:8px 12px;font-size:11px;">▶ Play In-App</button>
+      </div>
+    </div>`).join("");
+  document.querySelectorAll(".play-inapp-btn").forEach(b => {
+    b.addEventListener("click", () => playTrackInApp(b.dataset.yt, b.dataset.title));
+  });
+}
+renderPlaylist();
+document.getElementById("localMp3Input").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const p = document.getElementById("localMp3Player");
+  p.src = URL.createObjectURL(f); p.style.display = "block"; p.play();
+  document.getElementById("nowPlaying").textContent = "NOW PLAYING (LOCAL): " + f.name;
+});
+document.getElementById("wpFilter").addEventListener("change", renderPlaylist);
+document.getElementById("wpThemePlay").addEventListener("click", () => { playClassicRajniMusic(); toast("Playing Superstar Title Theme!"); });
+document.getElementById("wpThemeStop").addEventListener("click", () => { const a = document.getElementById("rajniAudio"); if (a) a.pause(); });
+document.getElementById("hudPlayBtn").addEventListener("click", () => {
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+  document.getElementById("workPlaylist").classList.add("active");
+  document.querySelectorAll(".hud-pill").forEach(p => p.classList.remove("active"));
+  document.getElementById("hudPlayBtn").classList.add("active");
+});
+
 
 // Classic LED Dot-Matrix SUPER STAR RAJNI Intro + Synced Synth Theme
 const DOT_FONT = {
@@ -1707,6 +2201,164 @@ document.getElementById("replayIntroBtn").addEventListener("click", () => {
   rajniIntro.classList.remove("hide");
   runRajniAnimation(true, true);
 });
+</script>
+
+<script>
+(function(){
+  const inp = document.getElementById("toolQuickSearch");
+  const resBox = document.getElementById("quickToolResults");
+  const allBtns = Array.from(document.querySelectorAll(".sidebar .nav-btn"));
+  function renderQuick(q) {
+    const query = (q || "").trim().toLowerCase();
+    if (!query) { resBox.innerHTML = ""; return; }
+    const hits = allBtns.filter(b => b.textContent.toLowerCase().includes(query)).slice(0, 8);
+    resBox.innerHTML = hits.length
+      ? hits.map(b => `<button type="button" class="quick-pill" data-jump="${b.dataset.tab}">${b.textContent}</button>`).join("")
+      : `<span style="color:#94a3b8;font-size:12px;">No matching engine found</span>`;
+    resBox.querySelectorAll("[data-jump]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = allBtns.find(x => x.dataset.tab === btn.dataset.jump);
+        if (target) target.click();
+        inp.value = ""; resBox.innerHTML = "";
+      });
+    });
+  }
+  inp.addEventListener("input", () => renderQuick(inp.value));
+})();
+</script>
+
+<script>
+(function(){
+  const hubBrowser = document.getElementById("hubBrowser");
+  const wsLayout = document.getElementById("toolWorkspaceLayout");
+  const hubGrid = document.getElementById("hubCardsGrid");
+  const searchInp = document.getElementById("toolQuickSearch");
+  const backBtn = document.getElementById("backToHubBtn");
+  const wsBadge = document.getElementById("wsActiveBadge");
+
+  const metaMap = {
+    t2i: ["🖼️", "Generate real AI art via Pollinations Flux & AI Horde SDXL workers."],
+    i2i: ["✨", "Restyle & blend uploaded photos using AI Horde SDXL / Deliberate."],
+    t2v: ["🎬", "Generate an AI scene on Flux/SDXL and animate up to 2 mins."],
+    i2v: ["🎞️", "Animate photos with camera motion presets & 30/60 FPS render."],
+    v2v: ["⚡", "Restyle uploaded videos into 3D, Ghibli, Clay, LEGO or Cyberpunk."],
+    aiImgEdit: ["🪄", "Smart AI image enhance, auto-contrast & style filter studio."],
+    normImgEdit: ["🖌️", "Crop, rotate, brightness, contrast & watermark image editor."],
+    aiVidEdit: ["🎥", "Apply cinematic color grading, pulse & speed FX to videos."],
+    normVidEdit: ["✂️", "Trim, speed-adjust & export videos locally in your browser."],
+    canvasCreate: ["🎨", "Freehand draw, shapes & neon sketchpad with PNG export."],
+    nameCardGen: ["🪪", "Design glowing cyber name cards & export crisp PNG badges."],
+    logoGen: ["👑", "Forge metallic & neon brand logos with AI + vector presets."],
+    webGen: ["🌐", "Generate responsive HTML/CSS websites with live preview."],
+    musicGen: ["🥁", "Compose custom Kuthu & synth beats in real time via Web Audio."],
+    tts: ["🔊", "Convert any script into natural spoken audio with pitch & speed."],
+    dictator: ["🎙️", "Live speech-to-text dictation right inside your browser."],
+    workPlaylist: ["🎧", "Play Anirudh × Rajni tracks, Superstar Theme or local MP3s."],
+    chatbot: ["🤖", "Chat with Thalaivar AI powered by live AI Horde LLM workers."],
+    docGen: ["📄", "Generate structured essays, reports & project docs instantly."],
+    slideGen: ["📊", "Build multi-slide presentation decks with speaker notes."],
+    humanizer: ["✍️", "Rewrite robotic AI text into natural human phrasing."],
+    notesGen: ["📝", "Turn any chapter or topic into high-class exam study notes."],
+    mindmapGen: ["🧠", "Generate visual mind maps for faster revision & recall."],
+    flashGen: ["🃏", "Create interactive flip flashcards for active-recall prep."],
+    timetableGen: ["📅", "Build balanced daily study & workout timetables."],
+    assetsVault: ["🗄️", "Browse, copy & download all your saved images and creations."]
+  };
+
+  const catalog = [];
+  document.querySelectorAll(".sidebar .cat-group").forEach(grp => {
+    const catName = grp.querySelector(".cat-title").childNodes[0].textContent.trim();
+    grp.querySelectorAll(".nav-btn").forEach(btn => {
+      const id = btn.dataset.tab;
+      const [icon, desc] = metaMap[id] || ["⚡", "Launch this Thalaivar AI studio engine."];
+      catalog.push({ id, name: btn.textContent.trim(), cat: catName, icon, desc, btn });
+    });
+  });
+
+  let activeCat = "All";
+
+  function openEngine(item) {
+    hubBrowser.classList.add("hidden");
+    wsLayout.classList.remove("hub-mode");
+    wsBadge.textContent = item.name;
+    item.btn.click();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showHub() {
+    wsLayout.classList.add("hub-mode");
+    hubBrowser.classList.remove("hidden");
+  }
+
+  function renderHubCards() {
+    const q = (searchInp.value || "").trim().toLowerCase();
+    const list = catalog.filter(it => {
+      const okCat = activeCat === "All" || it.cat === activeCat;
+      const okQ = !q || it.name.toLowerCase().includes(q) || it.cat.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q);
+      return okCat && okQ;
+    });
+    hubGrid.innerHTML = list.map((it, i) => `
+      <div class="studio-card">
+        <div>
+          <div class="sc-top">
+            <div class="sc-icon">${it.icon}</div>
+            <span class="sc-badge">#${String(i+1).padStart(2,"0")} • ${it.cat.split(" ")[0]}</span>
+          </div>
+          <h3 class="sc-title">${it.name}</h3>
+          <p class="sc-desc">${it.desc}</p>
+        </div>
+        <button type="button" class="sc-launch" data-open-id="${it.id}">Launch Engine →</button>
+      </div>
+    `).join("") || '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:30px;">No matching engine found.</div>';
+
+    hubGrid.querySelectorAll("[data-open-id]").forEach(b => {
+      b.addEventListener("click", () => {
+        const item = catalog.find(x => x.id === b.dataset.openId);
+        if (item) openEngine(item);
+      });
+    });
+  }
+
+  document.getElementById("hubCategoryPills").addEventListener("click", e => {
+    const pill = e.target.closest("[data-hub-cat]");
+    if (!pill) return;
+    activeCat = pill.dataset.hubCat;
+    document.querySelectorAll("#hubCategoryPills .quick-pill").forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    showHub();
+    renderHubCards();
+  });
+
+  searchInp.addEventListener("input", () => {
+    showHub();
+    renderHubCards();
+  });
+
+  backBtn.addEventListener("click", showHub);
+
+  // Hook top HUD nav pills (STUDIO / ASSETS / PLAYLISTS) & sidebar buttons cleanly
+  document.getElementById("hudStudioBtn")?.addEventListener("click", () => {
+    showHub();
+    document.querySelectorAll(".hud-pill").forEach(p => p.classList.remove("active"));
+    document.getElementById("hudStudioBtn").classList.add("active");
+  });
+  document.getElementById("hudAssetsBtn")?.addEventListener("click", () => {
+    const item = catalog.find(x => x.id === "assetsVault");
+    if (item) openEngine(item);
+  });
+  document.getElementById("hudPlayBtn")?.addEventListener("click", () => {
+    const item = catalog.find(x => x.id === "workPlaylist");
+    if (item) openEngine(item);
+  });
+  document.querySelectorAll(".sidebar .nav-btn").forEach(el => {
+    el.addEventListener("click", () => {
+      hubBrowser.classList.add("hidden");
+      wsLayout.classList.remove("hub-mode");
+    });
+  });
+
+  renderHubCards();
+})();
 </script>
 </body>
 </html>
